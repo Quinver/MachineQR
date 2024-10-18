@@ -3,42 +3,50 @@ Auteur(s): Namen van de teamleden die aan dit project werken.
 Reviewers: S. Princen, K. Provoost  
 **Via commits wordt de laatste versie (inclusief datum) bijgehouden**
 ## 1	OVERZICHT
-Beschrijf het project in maximaal drie alinea's. Geef een samenvatting die iedereen in het team of de klas begrijpt, zodat ze snel kunnen beoordelen of ze verder moeten lezen.
+Onze opdracht is om een webapp oprichten die een overzicht geeft voor alle machines in het werkhuis hier op school. Er wordt zo onder andere de serienummers, veiligheidsinstructiekaarten, onderhoudsfiches, de handleidingen en foto’s getoond. Eventueel zou het overzicht ook de status van deze machines kunnen aantonen (bv. of deze defect is of online of offline is ).
+
 ## 2	CONTEXT
-Wat is het probleem dat je wilt oplossen?  
-Waarom is dit project noodzakelijk?  
-Welke achtergrondinformatie is nodig om het probleem en de oplossing te begrijpen?  
-Hoe past dit project binnen de bredere context van andere projecten of doelen?  
+Om te controleren of er een machine nog werkt moet meneer De Poorter steeds alle gegevens handmatig nakijken, wat leidt tot een chaos. Door het maken van onze webapp hopen we zijn job een beetje te vergemakkelijken. Het is belangrijk omdat deze de job van meneer De Poorter makkelijker maakt en orde brengt. 
+
+Enkele vragen die eventueel van toepass kunnen komen:
+Hoe gaan we dit project aanpakken? Welke vorm gaan we onze webapp geven? Hoeveel informatie moet er opgeslagen worden? Welke machines moeten er allemaal in de database? Hoe gaan we zorgen voor een QR-code bij elke machine? Welke programma’s gaan we gebruiken?
+Hierdoor leren we veel dingen die belangrijk kunnen zijn voor toekomstige projecten.
+
 ## 3	DOELEN EN NIET-DOELEN
 ## 3.1	Doelen (Requirements)
-Beschrijf welke resultaten je wilt bereiken.  
-Wie zijn de gebruikers? Dit kan een andere team, systeem of klant zijn.  
-Hoe ga je succes meten? Denk aan statistieken of concrete uitkomsten.
-**Maak onderscheid tussen vereiste doelen en optionele doelen**
+De bedoeling is om een overzicht te creëren voor alle machines die gebruikt worden in het werkhuis. De admin (In dit geval meneer De Poorter) heeft dan de mogelijkheid om alle bestanden te beheren. Hij zou voor elke machine een QR-code moeten scannen om deze in een lijst te zetten op onze webapp. Deze geeft dan allerlei kenmerken weer. (Misschien sorteren we de namen van de machines dan ook op alfabetische volgorde.) Als een machine defect is moet de admin ook de mogelijkheid hebben om de status te zien van machines (online of offline indien deze defect is). Hij zou dan eventueel een machine in de lijst kunnen opzoeken en/of verwijderen.
 ### 3.2	Niet-Doelen
-Wat los je bewust niet op met dit project?  
-Geef duidelijk aan welke problemen buiten de scope van dit project vallen.
+Dit is uit zichzelf een vrij klein project. De bedoeling is dat we deze niet te ver proberen uit te breiden. 
 ## 4	PLANNING
-Geef een overzicht van hoe het werk wordt opgedeeld.  
-Specificeer de taken, wie wat doet, en de bijbehorende deadlines.  
-Gebruik dit deel eventueel als een voortgangstracker voor het project.  
-Geef een overzicht van belangrijke stappen in het project met geschatte deadlines.  
-•	Startdatum:  
-•	Mijlpaal 1: 
-•	Mijlpaal 2: 
-•	…
-•	Einddatum:
+### Todo: Hayley
+#### -Check software
+#### -Install extensions vscode
+#### -Brainstorm design elke pagina
+#### -Front-end homepage
+#### -Back-end homepage
+
+### Todo: Quin
+#### -Routing
+#### -Config database
+#### -Frontend machine bio
+#### -Login back-end
+#### -Login safety
+
+### Todo: Liam
+#### -Check software
+#### -Install extensions vscode
+#### -Front-end machine list
+#### -Zoek QR code API en voeg toe in machine page
+#### -Login front-end
+#### -Back-end machine list
 ## 5	BENODIGDE MIDDELEN
-Welke middelen vereist zijn voor het ontwikkelen van het project:
-•	Wat voor applicatietype kies je? (website, mobiele app, desktopapp, API, Database, …)
-•	Welke programmeertalen worden gebruikt? (front- en back-end)
-•	Welke ontwikkelomgeving (IDE) wordt gebruikt? (Visual Studio, PyCharm, …)
-•	Welke versiebeheersystemen zijn nodig? (Git, Github, GitLab, …)
-•	Welke libraries, frameworks of tools worden gebruikt voor het ontwikkelen van de applica-tie? (Flask, Django, Bootstrap, TensorFlow, …)
-•	Zijn er speciale hardwarevereisten? (bv. GPU's voor machine learning)
-•	Zijn er licenties nodig voor software of tools?
+Middelen vereist voor het ontwikkelen van het project: Webapp
+Programmeertalen: HTML, CSS, C#
+Programma’s: Visual Studio Code, PostgreSQL…
+Versiebeheersystemen: Github
+Frameworks: Asp.net (inclusief Bootstrap)
 ## 6	VERWACHTE PROBLEMEN
-Welke mogelijke uitdagingen en obstakels kunnen tijdens de ontwikkeling van het project op-treden? Het is belangrijk om proactief na te denken over deze problemen, zodat je ze vroeg-tij-dig kunt identificeren en plannen kunt maken om ze op te lossen.
+Momenteel nog geen problemen.
 ## 7	OPLOSSINGEN
 ## 7.1	Bestaande Oplossing
 Beschrijf de huidige situatie en hoe gebruikers nu omgaan met het systeem. Geef een ge-bruikersverhaal of voorbeeld van hoe de data door het systeem stroomt.
@@ -53,9 +61,13 @@ Geef een overzicht van de voorgestelde technische oplossing:
 Welke andere oplossingen heb je overwogen?  
 Wat zijn de voor- en nadelen van deze alternatieven?
 ## 8	TESTBAARHEID, MONITORING EN DETECTIE
-Hoe zorg je ervoor dat de oplossing goed getest is?  
-Hoe wordt het systeem gemonitord?  
-Hoe worden problemen gedetecteerd en opgelost?
+We werken met branches in github: 
+main (De main branch, alles komt hier terecht)
+develop (Aanpassingen groot en klein, alle features worden hier eerst gemerged)
+feature/”naam feature” (Nieuwe functies toevoegen)
+release (Klaar om uit te brengen)
+Bij een pull request wordt alles eerst getest voordat er een merge gebeurt.
+
 ## 9	AFHANDELING
 Zijn er nog onopgeloste kwesties?  
 Welke beslissingen moeten nog worden genomen?  
