@@ -1,5 +1,5 @@
-# TITEL PROJECT
-Auteur(s): Namen van de teamleden die aan dit project werken.  
+# Machine QR
+Auteur(s): Hayley Bachot, Quin Verhoeven, Liam Vereycken  
 Reviewers: S. Princen, K. Provoost  
 **Via commits wordt de laatste versie (inclusief datum) bijgehouden**
 ## 1	OVERZICHT
