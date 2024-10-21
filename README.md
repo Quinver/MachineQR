@@ -41,9 +41,13 @@ Dit is uit zichzelf een vrij klein project. De bedoeling is dat we deze niet te 
 #### -Back-end machine list
 ## 5	BENODIGDE MIDDELEN
 Middelen vereist voor het ontwikkelen van het project: Webapp
+
 Programmeertalen: HTML, CSS, C#
+
 Programma’s: Visual Studio Code, PostgreSQL…
+
 Versiebeheersystemen: Github
+
 Frameworks: Asp.net (inclusief Bootstrap)
 ## 6	VERWACHTE PROBLEMEN
 Momenteel nog geen problemen.
