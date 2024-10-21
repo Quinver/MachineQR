@@ -19,26 +19,40 @@ De bedoeling is om een overzicht te creëren voor alle machines die gebruikt wor
 Dit is uit zichzelf een vrij klein project. De bedoeling is dat we deze niet te ver proberen uit te breiden. 
 ## 4	PLANNING
 ### Todo: Hayley
-#### -Check software
-#### -Install extensions vscode
-#### -Brainstorm design elke pagina
-#### -Front-end homepage
-#### -Back-end homepage
+ -Check software
+ 
+-Install extensions vscode
+
+-Brainstorm design elke pagina
+
+-Front-end homepage
+
+-Back-end homepage
+
 
 ### Todo: Quin
-#### -Routing
-#### -Config database
-#### -Frontend machine bio
-#### -Login back-end
-#### -Login safety
+-Routing
+
+-Config database
+
+-Frontend machine bio
+
+-Login back-end
+
+-Login safety
 
 ### Todo: Liam
-#### -Check software
-#### -Install extensions vscode
-#### -Front-end machine list
-#### -Zoek QR code API en voeg toe in machine page
-#### -Login front-end
-#### -Back-end machine list
+-Check software
+
+-Install extensions vscode
+
+-Front-end machine list
+
+-Zoek QR code API en voeg toe in machine page
+
+-Login front-end
+
+-Back-end machine list
 ## 5	BENODIGDE MIDDELEN
 Middelen vereist voor het ontwikkelen van het project: Webapp
 
