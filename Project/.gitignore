@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Ignore assembly info files
+*AssemblyInfo.cs
+*AssemblyInfoInputs.cache
