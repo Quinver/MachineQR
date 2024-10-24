@@ -16,3 +16,5 @@ And the C# course if you are really desperate:
 ## Videos:
 - [Bootstrap Playlist](https://www.youtube.com/watch?v=7g8Gg2QVdeU&list=PL55RiY5tL51rLqH4-8LBVlUTIFF70dxhb&pp=iAQB)
 - [Git Terminal Playlist](https://www.youtube.com/watch?v=_OZVJpLHUaI&list=PL55RiY5tL51poFMpbva1IqfO-pylwSNsN)
+## Quinver Repo example
+- [FinanceManager](https://github.com/Quinver/FinanceManager)
