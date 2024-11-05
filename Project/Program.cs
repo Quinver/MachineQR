@@ -1,7 +1,19 @@
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+using Project.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Load environment variables from .env file
+Env.Load();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add DbContext with PostgreSQL
+var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
@@ -9,7 +21,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
