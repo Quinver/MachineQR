@@ -16,6 +16,7 @@ namespace Project.Data
 
         // This property represents the TestEntities table in the database.
         // DbSet is a collection of entities that can be queried from the database.
+        // Basicly these are the models that you want to store and get from a table in the database (CRUD operations)
         public DbSet<TestEntity> TestEntities { get; set; }
     }
 }
