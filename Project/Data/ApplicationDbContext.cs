@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Project.Models;
 
 namespace Project.Data
 {
@@ -15,17 +16,7 @@ namespace Project.Data
 
         // This property represents the TestEntities table in the database.
         // DbSet is a collection of entities that can be queried from the database.
+        // Basicly these are the models that you want to store and get from a table in the database (CRUD operations)
         public DbSet<TestEntity> TestEntities { get; set; }
-    }
-
-    // This class represents an entity in the TestEntities table.
-    // Each instance of this class corresponds to a row in the table.
-    public class TestEntity
-    {
-        // The Id property is the primary key for the table.
-        public int Id { get; set; }
-
-        // The Name property represents a column in the table.
-        public string Name { get; set; }
     }
 }
