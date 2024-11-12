@@ -12,5 +12,7 @@ namespace Project.Models
 
         // The Name property represents a column in the table.
         public string Name { get; set; }
+
+        public string Description { get; set; }
     }
 }
