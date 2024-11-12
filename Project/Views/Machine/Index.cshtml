@@ -1,8 +1,8 @@
 @* Test page, you may delete, This page also tells if the test database is connected *@
 
-@model IEnumerable<Project.Models.TestEntity>
+@model IEnumerable<Project.Models.TestEntity> // Model is a list of TestEntity objects
 @{
-    ViewData["Title"] = "Machine Index";
+    ViewData["Title"] = "Machine Index"; // Change the title of the page
 }
 
 <h2>Machine List</h2>
@@ -10,16 +10,18 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            @* If there are no machines, show a warning message *@
             @if (!Model.Any())
             {
                 <div class="alert alert-warning" role="alert">
                     No machines available. Check if database is connected?
                 </div>
             }
+            @* If there are machines, show them in a list *@
             else
             {
                 <ul class="list-group">
-                    @foreach (var item in Model)
+                    @foreach (var item in Model) @* List properties for every machine *@
                     {
                         <li class="list-group-item">
                             @item.Id - @item.Name - @item.Description

@@ -18,16 +18,20 @@ namespace Project.Controllers
 
         public IActionResult Index()
         {
+            // Get all machines from the database
             List<TestEntity> machines;
             try
             {
                 machines = _context.TestEntities.ToList();
             }
+            // Log any errors that occur
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching machines from the database.");
                 machines = new List<TestEntity>();
             }
+
+            // Pass the list of machines to the view (Index.cshtml)
             return View(machines);
         }
     }
