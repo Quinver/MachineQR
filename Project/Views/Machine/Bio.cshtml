@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Machine Bio";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">PDF Viewer and Placeholder Image</h2>
+    <div class="row">
+        <!-- PDF Viewer Section -->
+        <div class="col-md-8">
+            <!-- Existing PDF Viewer -->
+            <div id="pdf-container">
+                <div class="ratio ratio-16x9 mb-3">
+                    <object class="embed-responsive-item"
+                        data="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf"
+                        type="application/pdf">
+                        Your browser does not support embedded PDFs. 
+                        <a href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf" target="_blank">
+                            Click here to view the PDF.
+                        </a>
+                    </object>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Image -->
+    <div class="fixed-image">
+        <img src="https://via.placeholder.com/300x500" alt="Placeholder" class="img-fluid rounded shadow">
+    </div>
+</div>
+
+<style>
+    .fixed-image {
+        position: fixed;
+        top: 20px; /* Adjust this value to fine-tune the vertical position */
+        right: 20px; /* Adjust this value to fine-tune the horizontal position */
+        width: 300px; /* Fixed width for the image */
+        height: 500px; /* Fixed height for the image */
+        z-index: 1050; /* Ensures it appears above other content */
+    }
+
+    .fixed-image img {
+        width: 100%; /* Ensure the image fits within the defined dimensions */
+        height: 100%; /* Ensure the image fits within the defined dimensions */
+        object-fit: cover; /* Makes the image look good within the fixed container */
+    }
+</style>
+
+    <!-- Button to Add New PDF -->
+    <div class="mt-4 text-center">
+        <button id="add-pdf-button" class="btn btn-primary">Add Test PDF</button>
+    </div>
+</div>
+
+<script>
+    // JavaScript to dynamically add a new PDF
+    document.getElementById("add-pdf-button").addEventListener("click", function () {
+        // Create a new div for the PDF viewer
+        var newPdfDiv = document.createElement("div");
+        newPdfDiv.className = "ratio ratio-16x9 mb-3";
+
+        // Add the object tag for the new PDF
+        var newObject = document.createElement("object");
+        newObject.className = "embed-responsive-item";
+        newObject.setAttribute("data", "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf");
+        newObject.setAttribute("type", "application/pdf");
+        newObject.innerHTML = `
+            Your browser does not support embedded PDFs. 
+            <a href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf" target="_blank">
+                Click here to view the PDF.
+            </a>
+        `;
+
+        // Append the object tag to the new div
+        newPdfDiv.appendChild(newObject);
+
+        // Append the new div to the container
+        document.getElementById("pdf-container").appendChild(newPdfDiv);
+    });
+</script>
