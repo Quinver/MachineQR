@@ -19,5 +19,6 @@ namespace Project.Data
         
         // Basicly these are the models that you want to store and get from a table in the database (CRUD operations)
         public DbSet<TestEntity> TestEntities { get; set; }
+        public DbSet<MachineModel> MachineModels { get; set; }
     }
 }
