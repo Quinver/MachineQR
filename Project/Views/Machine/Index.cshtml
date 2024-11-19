@@ -29,6 +29,12 @@
                     }
                 </ul>
             }
+
+        @* Add button to create new machine *@
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Create New Machine</a>
+        }
         </div>
     </div>
 </div>

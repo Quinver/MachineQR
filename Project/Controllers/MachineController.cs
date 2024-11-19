@@ -36,6 +36,24 @@ namespace Project.Controllers
             return View(machines);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            // Return the view for creating a new machine
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(MachineModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.MachineModels.Add(model);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
         public IActionResult Bio()
         {
             return View();
