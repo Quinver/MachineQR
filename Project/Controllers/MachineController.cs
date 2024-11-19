@@ -34,5 +34,10 @@ namespace Project.Controllers
             // Pass the list of machines to the view (Index.cshtml)
             return View(machines);
         }
+
+        public IActionResult Bio()
+        {
+            return View();
+        }
     }
 }
