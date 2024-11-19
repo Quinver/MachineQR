@@ -484,7 +484,7 @@ $RECYCLE.BIN/
 *.swp
 
 # Ignore auto-generated AssemblyInfo.cs
-**/AssemblyInfo.cs
+Project/obj/Debug/net8.0/AssemblyInfo.cs
 
 # Ignore auto-generated Project.AssemblyInfoInputs.cache
-**/Project.AssemblyInfoInputs.cache
+/Project/obj/Debug/net8.0/Project.AssemblyInfoInputs.cache
