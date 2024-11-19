@@ -1,20 +1,3 @@
-@model Project.Models.UserModel
 @{
     ViewData["Title"] = "Login";
 }
-
-<form asp-action="" method="post">
-    <div class="form-group">
-        <label asp-for="Username" class="control-label"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PasswordHash" class="control-label">Password</label>
-        <input asp-for="PasswordHash" class="form-control" />
-        <span asp-validation-for="PasswordHash" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Login" class="btn btn-primary" />
-    </div>
-</form>
