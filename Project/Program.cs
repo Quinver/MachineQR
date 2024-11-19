@@ -19,10 +19,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add Identity with Role Support
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.User.RequireUniqueEmail = false;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.LogoutPath = "/Logout";
+});
 
 var app = builder.Build();
 
@@ -58,7 +66,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapRazorPages();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -71,5 +78,31 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+
+// Map Razor Pages
+app.MapRazorPages();
+
+// Custom route for login page
+app.MapGet("/Login", context =>
+{
+    context.Response.Redirect("/Identity/Account/Login");
+    return Task.CompletedTask;
+});
+
+// Optionally, add routes for register and logout
+app.MapGet("/Register", context =>
+{
+    context.Response.Redirect("/Identity/Account/Register");
+    return Task.CompletedTask;
+});
+app.MapGet("/Logout", context =>
+{
+    context.Response.Redirect("/Identity/Account/Logout");
+    return Task.CompletedTask;
+});
+
+
 
 app.Run();
