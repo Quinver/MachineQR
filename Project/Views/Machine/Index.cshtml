@@ -1,6 +1,6 @@
 @* Test page, you may delete, This page also tells if the test database is connected *@
 
-@model IEnumerable<Project.Models.TestEntity> // Model is a list of TestEntity objects
+@model IEnumerable<Project.Models.MachineModel> // Model is a list of TestEntity objects
 @{
     ViewData["Title"] = "Machine Index"; // Change the title of the page
 }
@@ -24,7 +24,7 @@
                     @foreach (var item in Model) @* List properties for every machine *@
                     {
                         <li class="list-group-item">
-                            @item.Id - @item.Name - @item.Description
+                            @item.Id - @item.Name - @item.Room
                         </li>
                     }
                 </ul>
