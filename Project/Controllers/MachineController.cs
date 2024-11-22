@@ -6,7 +6,7 @@ using Project.Models;
 
 namespace Project.Controllers
 {
-    [Route("machine/room/{id}")]
+    [Route("machine")]
     public class MachineController : Controller
     {
         private readonly ILogger<MachineController> _logger;
@@ -17,26 +17,13 @@ namespace Project.Controllers
             _logger = logger;
             _context = context;
         }
-
-        [HttpPost]
-        public IActionResult Create(MachineModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.MachineModels.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(model);
-        }
-
-
+        
         // For every machine in the database there needs to be a view "Bio"
-        [HttpGet]
-        public IActionResult Bio(int id)
+        [HttpGet("{room}/{id}")]
+        public IActionResult Bio(string room, int id)
         {
-            // Get the machine with the specified ID
-            var machine = _context.MachineModels.FirstOrDefault(m => m.Id == id);
+            // Get the machine with the specified ID and room
+            var machine = _context.MachineModels.FirstOrDefault(m => m.Id == id && m.Room == room);
 
             // If the machine does not exist, return a 404 Not Found response
             if (machine == null)
