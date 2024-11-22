@@ -31,7 +31,7 @@ namespace Project.Controllers
         }
 
 
-        // for every machine in the database there needs to be a view "Bio"
+        // For every machine in the database there needs to be a view "Bio"
         [HttpGet]
         public IActionResult Bio(int id)
         {
