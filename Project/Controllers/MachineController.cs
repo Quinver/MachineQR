@@ -6,6 +6,7 @@ using Project.Models;
 
 namespace Project.Controllers
 {
+    [Route("machine/room/{id}")]
     public class MachineController : Controller
     {
         private readonly ILogger<MachineController> _logger;
@@ -17,31 +18,6 @@ namespace Project.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            // Get all machines from the database
-            List<MachineModel> machines;
-            try
-            {
-                machines = _context.MachineModels.ToList();
-            }
-            // Log any errors that occur
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching machines from the database.");
-                machines = new List<MachineModel>();
-            }
-
-            // Pass the list of machines to the view (Index.cshtml)
-            return View(machines);
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            // Return the view for creating a new machine
-            return View();
-        }
         [HttpPost]
         public IActionResult Create(MachineModel model)
         {
@@ -54,9 +30,22 @@ namespace Project.Controllers
             return View(model);
         }
 
-        public IActionResult Bio()
+
+        // for every machine in the database there needs to be a view "Bio"
+        [HttpGet]
+        public IActionResult Bio(int id)
         {
-            return View();
+            // Get the machine with the specified ID
+            var machine = _context.MachineModels.FirstOrDefault(m => m.Id == id);
+
+            // If the machine does not exist, return a 404 Not Found response
+            if (machine == null)
+            {
+                return View("NotFound");
+            }
+
+            // Pass the machine to the view (Bio.cshtml)
+            return View(machine);
         }
     }
 }
