@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Project.Data;
 using Project.Models;
 
 namespace Project.Controllers
 {
+    [Route("machine")]
     public class MachineController : Controller
     {
         private readonly ILogger<MachineController> _logger;
@@ -15,20 +17,22 @@ namespace Project.Controllers
             _logger = logger;
             _context = context;
         }
-
-        public IActionResult Index()
+        
+        // For every machine in the database there needs to be a view "Bio"
+        [HttpGet("{room}/{id}")]
+        public IActionResult Bio(string room, int id)
         {
-            List<TestEntity> machines;
-            try
+            // Get the machine with the specified ID and room
+            var machine = _context.MachineModels.FirstOrDefault(m => m.Id == id && m.Room == room);
+
+            // If the machine does not exist, return a 404 Not Found response
+            if (machine == null)
             {
-                machines = _context.TestEntities.ToList();
+                return View("NotFound");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching machines from the database.");
-                machines = new List<TestEntity>();
-            }
-            return View(machines);
+
+            // Pass the machine to the view (Bio.cshtml)
+            return View(machine);
         }
     }
 }

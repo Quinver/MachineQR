@@ -1,0 +1,207 @@
+@model MachineModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-4">PDF Viewer and Placeholder Image</h2>
+        <button id="download-all-button" class="btn btn-success">Download All PDFs</button>
+    </div>
+    <div class="row">
+        <!-- PDF Viewer Section -->
+        <div class="col-md-8">
+            <!-- Container for PDFs -->
+            <div id="pdf-container">
+                <!-- Example PDF Viewer -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Placeholder</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ratio ratio-16x9">
+                            <object class="embed-responsive-item"
+                                data="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf"
+                                type="application/pdf">
+                                Your browser does not support embedded PDFs.
+                                <a href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf"
+                                    target="_blank">
+                                    Click here to view the PDF.
+                                </a>
+                            </object>
+                        </div>
+                    </div>
+                    <!-- Delete Button -->
+                    <div class="card-footer text-end">
+                        <button class="btn btn-danger btn-sm delete-pdf-button">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="col-md-4 d-flex align-items-start">
+            <img src="https://via.placeholder.com/300x500" alt="Placeholder" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Button to Add New PDF -->
+    <div class="mt-4 text-center">
+        <button id="add-pdf-button" class="btn btn-primary">Add PDF</button>
+        <input type="file" id="pdf-file-input" class="d-none" accept=".pdf">
+    </div>
+</div>
+
+<style>
+    .col-md-4 img {
+        width: 300px;
+        /* Fixed width for the image */
+        height: 500px;
+        /* Fixed height for the image */
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+    // Add delete functionality to dynamically and statically added delete buttons
+    function addDeleteButtonListener(deleteButton, cardElement) {
+        deleteButton.addEventListener("click", function () {
+            cardElement.remove();
+        });
+    }
+
+    // Attach listener to the first delete button (for the original PDF)
+    document.addEventListener("DOMContentLoaded", function () {
+        const firstDeleteButton = document.querySelector(".delete-pdf-button");
+        const firstCard = firstDeleteButton.closest(".card");
+
+        // Attach the delete functionality to the first PDF
+        addDeleteButtonListener(firstDeleteButton, firstCard);
+    });
+
+    // Trigger file input click when "Add PDF" button is clicked
+    document.getElementById("add-pdf-button").addEventListener("click", function () {
+        document.getElementById("pdf-file-input").click();
+    });
+
+    // Handle file selection and add a new PDF
+    document.getElementById("pdf-file-input").addEventListener("change", function (event) {
+        var file = event.target.files[0];
+
+        if (!file) return;
+
+        // Create a new card container for the PDF
+        var newCard = document.createElement("div");
+        newCard.className = "card mb-3";
+
+        // Create the card header for the title
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "card-header";
+
+        var cardTitle = document.createElement("h5");
+        cardTitle.className = "card-title mb-0";
+        cardTitle.textContent = "Placeholder"; // Default title for all PDFs
+
+        cardHeader.appendChild(cardTitle);
+
+        // Create the card body
+        var cardBody = document.createElement("div");
+        cardBody.className = "card-body";
+
+        // Add the PDF viewer inside the card body
+        var pdfViewer = document.createElement("div");
+        pdfViewer.className = "ratio ratio-16x9";
+
+        // Create an object element for the PDF file
+        var newObject = document.createElement("object");
+        newObject.className = "embed-responsive-item";
+
+        // Use URL.createObjectURL to create a URL for the uploaded file
+        var fileUrl = URL.createObjectURL(file);
+        newObject.setAttribute("data", fileUrl);
+        newObject.setAttribute("type", "application/pdf");
+        newObject.innerHTML = `
+            Your browser does not support embedded PDFs. 
+            <a href="${fileUrl}" target="_blank">
+                Click here to view the PDF.
+            </a>
+        `;
+
+        pdfViewer.appendChild(newObject);
+        cardBody.appendChild(pdfViewer);
+
+        // Create the card footer for the delete button
+        var cardFooter = document.createElement("div");
+        cardFooter.className = "card-footer text-end";
+        var deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger btn-sm delete-pdf-button";
+        deleteButton.textContent = "Delete";
+
+        addDeleteButtonListener(deleteButton, newCard);
+        cardFooter.appendChild(deleteButton);
+
+        // Append all parts to the card
+        newCard.appendChild(cardHeader);
+        newCard.appendChild(cardBody);
+        newCard.appendChild(cardFooter);
+
+        // Add the new card to the container
+        document.getElementById("pdf-container").appendChild(newCard);
+
+        // Clear the file input
+        event.target.value = "";
+    });
+
+    // Download all PDFs on the page
+    document.getElementById("download-all-button").addEventListener("click", async function () {
+        var zip = new JSZip();
+        var pdfObjects = document.querySelectorAll("#pdf-container object");
+
+        if (pdfObjects.length === 0) {
+            alert("No PDFs to download.");
+            return;
+        }
+
+        var pdfPromises = Array.from(pdfObjects).map((obj, index) => {
+            var pdfUrl = obj.getAttribute("data");
+
+            // Check if the URL is a blob (user-uploaded file)
+            if (pdfUrl.startsWith("blob:")) {
+                return fetch(pdfUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        zip.file(`PDF-${index + 1}.pdf`, blob);
+                    });
+            } else {
+                // Handle external URLs (CORS proxy workaround if necessary)
+                return fetch(pdfUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch PDF at ${pdfUrl}`);
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        zip.file(`PDF-${index + 1}.pdf`, blob);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert(`Error fetching PDF: ${pdfUrl}`);
+                    });
+            }
+        });
+        // Wait for all PDFs to be added to the zip
+        await Promise.all(pdfPromises);
+
+        // Generate the zip file and prompt download
+        zip.generateAsync({ type: "blob" }).then(function (zipBlob) {
+            saveAs(zipBlob, "All-PDFs.zip");
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
