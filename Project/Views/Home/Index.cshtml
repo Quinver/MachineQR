@@ -8,6 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        .display-4{
+            font-weight: bold; /* Zorgt ervoor dat de tekst vetgedrukt is */
+        }
+
         .btn-custom{
              padding: 1em 2em;
             background-color: #81BA27;
@@ -17,7 +21,12 @@
             cursor: pointer;
             font-size: 1em;
             margin: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Animatie voor een vloeiende overgang */
         }
+        .btn-custom:hover {
+        background-color: #1c94d4; /* Donkerdere groen op hover */
+        transform: scale(1.05); /* Licht vergroten */
+        color: #f9f9f9; /* Optioneel: kleur aanpassen op hover */
     </style>
 </head>
 
