@@ -44,7 +44,9 @@
         <div class="col-md-4 d-flex align-items-start">
             <img src="https://via.placeholder.com/300x500" alt="Placeholder" class="img-fluid rounded shadow">
         </div>
+
     </div>
+    <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small"})" alt="QR Code" />
 
     <!-- Button to Add New PDF -->
     <div class="mt-4 text-center">
