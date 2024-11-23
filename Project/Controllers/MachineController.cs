@@ -21,6 +21,13 @@ namespace Project.Controllers
             _context = context;
         }
 
+        [HttpGet("list")]
+        public IActionResult List()
+        {
+            var machines = _context.MachineModels.ToList();
+            return View(machines);
+        }
+
         // For every machine in the database there needs to be a view "Bio"
         [HttpGet("{room}/{id}")]
         public IActionResult Bio(string room, int id)
