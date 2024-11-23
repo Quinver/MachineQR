@@ -22,10 +22,53 @@ namespace Project.Controllers
         }
 
         [HttpGet("list")]
-        public IActionResult List()
+        public IActionResult List(string sortOrder)
         {
-            var machines = _context.MachineModels.ToList();
-            return View(machines);
+            var machines = _context.MachineModels.AsQueryable();
+
+            // Default sorting: ascending by name
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["RoomSortParm"] = sortOrder == "Room" ? "room_desc" : "Room";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    machines = machines.OrderByDescending(m => m.Name);
+                    break;
+                case "Room":
+                    machines = machines.OrderBy(m => m.Room);
+                    break;
+                case "room_desc":
+                    machines = machines.OrderByDescending(m => m.Room);
+                    break;
+                default:
+                    machines = machines.OrderBy(m => m.Name);
+                    break;
+            }
+
+            return View(machines.ToList());
+        }
+
+        // Get view to Create a new machine
+        [HttpGet("create")]
+        public IActionResult Create()
+        {
+
+            return View();
+        }
+
+        // Post from view to create a new machine
+        [HttpPost("create")]
+        public IActionResult Create(MachineModel machine)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.MachineModels.Add(machine);
+                _context.SaveChanges();
+                return RedirectToAction("List");
+            }
+
+            return View(machine);
         }
 
         // For every machine in the database there needs to be a view "Bio"
@@ -67,7 +110,7 @@ namespace Project.Controllers
                 default:
                     return BadRequest("Invalid size parameter.");
             }
-            
+
             var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
