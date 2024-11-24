@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Machine List</h2>
     <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Refresh", "Machine")'">
-        Refresh
+        <i class="bi bi-arrow-clockwise"></i>
     </button>
 </div>
 @if (Model == null || !Model.Any())
@@ -31,12 +31,12 @@ else
             <tr>
                 <th>
                     <a asp-action="List" asp-route-sortOrder="@ViewData["NameSortParm"]">
-                        <i class="fas fa-sort"></i>@Html.DisplayNameFor(model => model.Name)
+                        <i class="bi bi-funnel-fill"></i>@Html.DisplayNameFor(model => model.Name)
                     </a>
                 </th>
                 <th>
                     <a asp-action="List" asp-route-sortOrder="@ViewData["RoomSortParm"]">
-                        <i class="fas fa-sort"></i>@Html.DisplayNameFor(model => model.Room)
+                        <i class="bi bi-funnel-fill"></i>@Html.DisplayNameFor(model => model.Room)
                     </a>
                 </th>
                 <th>
