@@ -6,54 +6,67 @@ using Project.Models;
 using QRCoder;
 using System.Drawing;
 using System.IO;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Linq;
 
 namespace Project.Controllers
 {
     [Route("machine")]
     public class MachineController : Controller
     {
-        private readonly ILogger<MachineController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IMemoryCache _cache;
+        private const string MachinesCacheKey = "MachinesCacheKey";
 
-        public MachineController(ILogger<MachineController> logger, ApplicationDbContext context)
+        public MachineController(ApplicationDbContext context, IMemoryCache cache)
         {
-            _logger = logger;
             _context = context;
+            _cache = cache;
         }
 
         [HttpGet("list")]
         public IActionResult List(string sortOrder)
         {
-            var machines = _context.MachineModels.AsQueryable();
+            if (!_cache.TryGetValue(MachinesCacheKey, out List<MachineModel>? machines))
+            {
+                machines = _context.MachineModels.OrderBy(m => m.Name).ToList();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+                _cache.Set(MachinesCacheKey, machines, cacheEntryOptions);
+            }
 
             // Default sorting: ascending by name
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["RoomSortParm"] = sortOrder == "Room" ? "room_desc" : "Room";
 
-            switch (sortOrder)
+            if (machines != null)
             {
-                case "name_desc":
-                    machines = machines.OrderByDescending(m => m.Name);
-                    break;
-                case "Room":
-                    machines = machines.OrderBy(m => m.Room);
-                    break;
-                case "room_desc":
-                    machines = machines.OrderByDescending(m => m.Room);
-                    break;
-                default:
-                    machines = machines.OrderBy(m => m.Name);
-                    break;
+                switch (sortOrder)
+                {
+                    case "name_desc":
+                        machines = machines.OrderByDescending(m => m.Name).ToList();
+                        break;
+                    case "Room":
+                        machines = machines.OrderBy(m => m.Room).ToList();
+                        break;
+                    case "room_desc":
+                        machines = machines.OrderByDescending(m => m.Room).ToList();
+                        break;
+                    default:
+                        machines = machines.OrderBy(m => m.Name).ToList();
+                        break;
+                }
             }
-
-            return View(machines.ToList());
+            return View(machines);
         }
 
         // Get view to Create a new machine
         [HttpGet("create")]
         public IActionResult Create()
         {
-
             return View();
         }
 
@@ -65,10 +78,18 @@ namespace Project.Controllers
             {
                 _context.MachineModels.Add(machine);
                 _context.SaveChanges();
+                _cache.Remove(MachinesCacheKey); // Invalidate cache
                 return RedirectToAction("List");
             }
 
             return View(machine);
+        }
+
+        [HttpGet("refresh")]
+        public IActionResult Refresh()
+        {
+            _cache.Remove(MachinesCacheKey); // Invalidate cache
+            return RedirectToAction("List");
         }
 
         // For every machine in the database there needs to be a view "Bio"

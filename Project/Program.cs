@@ -11,6 +11,7 @@ Env.Load();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
 
 // Add DbContext with PostgreSQL
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
