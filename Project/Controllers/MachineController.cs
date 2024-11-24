@@ -1,14 +1,8 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Project.Data;
 using Project.Models;
 using QRCoder;
-using System.Drawing;
-using System.IO;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Linq;
 
 namespace Project.Controllers
 {
@@ -96,13 +90,26 @@ namespace Project.Controllers
         [HttpGet("{room}/{id}")]
         public IActionResult Bio(string room, int id)
         {
-            // Get the machine with the specified ID and room
-            var machine = _context.MachineModels.FirstOrDefault(m => m.Id == id && m.Room == room);
+            // Create a composite cache key using the room and id
+            var cacheKey = $"MachineBio_{room}_{id}";
 
-            // If the machine does not exist, return a 404 Not Found response
-            if (machine == null)
+            // Attempt to retrieve the machine from the cache
+            if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
             {
-                return View("NotFound");
+                // If the machine is not found in the cache, fetch it from the database
+                machine = _context.MachineModels.FirstOrDefault(m => m.Id == id && m.Room == room);
+
+                // If the machine does not exist, return a 404 Not Found response
+                if (machine == null)
+                {
+                    return View("NotFound");
+                }
+
+                // Store the machine in the cache with a sliding expiration of 5 minutes
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+                _cache.Set(cacheKey, machine, cacheEntryOptions);
             }
 
             // Generate QR code for the machine bio page
