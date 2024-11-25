@@ -18,8 +18,6 @@ var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-Console.WriteLine($"Loaded Connection String: {connectionString}");
-
 // Add Identity with Role Support
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {

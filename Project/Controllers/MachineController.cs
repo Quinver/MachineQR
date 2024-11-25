@@ -13,7 +13,6 @@ namespace Project.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
         private const string MachinesCacheKey = "MachinesCacheKey";
-        private const string BioCacheKey = "BioCache";
 
         public MachineController(ApplicationDbContext context, IMemoryCache cache)
         {
@@ -90,20 +89,28 @@ namespace Project.Controllers
         [HttpGet("refreshBio")]
         public IActionResult RefreshBio(string machineRoom, int machineId)
         {
-            _cache.Remove(BioCacheKey); // Invalidate cache for bio
             if (string.IsNullOrEmpty(machineRoom) || machineId <= 0)
             {
                 return View("NotFound");
             }
-            return RedirectToAction("Bio", new { Room = machineRoom, Id = machineId });
+
+            // Invalidate the cache
+            InvalidateBioCache(machineRoom, machineId);
+
+            return RedirectToAction("Bio", new { room = machineRoom, id = machineId });
+        }
+
+        private void InvalidateBioCache(string room, int id)
+        {
+            string cacheKey = $"Machine_{room}_{id}";
+            _cache.Remove(cacheKey);
         }
 
         // For every machine in the database there needs to be a view "Bio"
         [HttpGet("{room}/{id}")]
         public async Task<IActionResult> Bio(string room, int id)
         {
-            var cacheKey = string.Format(BioCacheKey, room, id);
-
+            string cacheKey = $"Machine_{room}_{id}";
             if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
             {
                 machine = await _context.MachineModels
@@ -120,46 +127,13 @@ namespace Project.Controllers
 
                 _cache.Set(cacheKey, machine, cacheEntryOptions);
             }
+
             var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
             ViewBag.QrCodeUrl = qrCodeUrl;
 
             return View(machine);
         }
 
-        [HttpGet("qrcode/{room}/{id}")]
-        public IActionResult GenerateQrCode(string room, int id, Size size = Size.small)
-        {
-            int dotSize;
-            switch (size)
-            {
-                case Size.small:
-                    dotSize = 5;
-                    break;
-                case Size.medium:
-                    dotSize = 10;
-                    break;
-                case Size.large:
-                    dotSize = 15;
-                    break;
-                default:
-                    return BadRequest("Invalid size parameter.");
-            }
-
-            var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
-            using (var qrGenerator = new QRCodeGenerator())
-            {
-                if (string.IsNullOrEmpty(qrCodeUrl))
-                {
-                    return BadRequest("QR code URL is null or empty.");
-                }
-
-                var qrCodeData = qrGenerator.CreateQrCode(qrCodeUrl, QRCodeGenerator.ECCLevel.Q);
-                var qrCode = new PngByteQRCode(qrCodeData);
-                var qrCodeBytes = qrCode.GetGraphic(dotSize);
-
-                return File(qrCodeBytes, "image/png");
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> UploadPdf(int machineId, List<IFormFile> files)
@@ -198,7 +172,7 @@ namespace Project.Controllers
                 }
             }
 
-            _cache.Remove(BioCacheKey);
+            InvalidateBioCache(machine.Room, machine.Id);
 
             await _context.SaveChangesAsync();
 
@@ -236,8 +210,6 @@ namespace Project.Controllers
                 System.IO.File.Delete(pdf.Path);
             }
 
-            _cache.Remove(BioCacheKey);
-
             _context.MachinePdfs.Remove(pdf);
             await _context.SaveChangesAsync();
 
@@ -245,7 +217,45 @@ namespace Project.Controllers
             {
                 return NotFound("Machine model not found");
             }
+
+            InvalidateBioCache(pdf.MachineModel.Room, pdf.MachineModel.Id);
+
             return RedirectToAction("Bio", new { room = pdf.MachineModel.Room, id = pdf.MachineModel.Id });
+        }
+
+        [HttpGet("qrcode/{room}/{id}")]
+        public IActionResult GenerateQrCode(string room, int id, Size size = Size.small)
+        {
+            int dotSize;
+            switch (size)
+            {
+                case Size.small:
+                    dotSize = 5;
+                    break;
+                case Size.medium:
+                    dotSize = 10;
+                    break;
+                case Size.large:
+                    dotSize = 15;
+                    break;
+                default:
+                    return BadRequest("Invalid size parameter.");
+            }
+
+            var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                if (string.IsNullOrEmpty(qrCodeUrl))
+                {
+                    return BadRequest("QR code URL is null or empty.");
+                }
+
+                var qrCodeData = qrGenerator.CreateQrCode(qrCodeUrl, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new PngByteQRCode(qrCodeData);
+                var qrCodeBytes = qrCode.GetGraphic(dotSize);
+
+                return File(qrCodeBytes, "image/png");
+            }
         }
     }
 
