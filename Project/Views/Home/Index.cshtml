@@ -1,9 +1,36 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <a asp-controller="Machine" asp-action="Index">Machine List</a>
-</div>
+    <style>
+        .btn-custom{
+             padding: 1em 2em;
+            background-color: #81BA27;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 1em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="text-center">
+        <h1 class="display-4">Welkom</h1>
+        
+        <!-- Ruimte toevoegen -->
+        <div class="spacer"></div>
+
+        <!-- Link naar Machine List -->
+        <a asp-controller="Machine" asp-action="List" class="btn btn-custom">Machine List</a>
+    </div>
+</body>
+</html>
