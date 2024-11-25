@@ -3,6 +3,7 @@ using Project.Data;
 using Project.Models;
 using QRCoder;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore;
 
 namespace Project.Controllers
 {
@@ -88,35 +89,20 @@ namespace Project.Controllers
 
         // For every machine in the database there needs to be a view "Bio"
         [HttpGet("{room}/{id}")]
-        public IActionResult Bio(string room, int id)
+        public async Task<IActionResult> Bio(string room, int id)
         {
-            // Create a composite cache key using the room and id
-            var cacheKey = $"MachineBio_{room}_{id}";
+            var machine = await _context.MachineModels
+                .Include(m => m.MachinePdfs) // Ensure MachinePdfs are included
+                .FirstOrDefaultAsync(m => m.Id == id && m.Room == room);
 
-            // Attempt to retrieve the machine from the cache
-            if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
+            if (machine == null)
             {
-                // If the machine is not found in the cache, fetch it from the database
-                machine = _context.MachineModels.FirstOrDefault(m => m.Id == id && m.Room == room);
-
-                // If the machine does not exist, return a 404 Not Found response
-                if (machine == null)
-                {
-                    return View("NotFound");
-                }
-
-                // Store the machine in the cache with a sliding expiration of 5 minutes
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
-
-                _cache.Set(cacheKey, machine, cacheEntryOptions);
+                return View("NotFound");
             }
 
-            // Generate QR code for the machine bio page
             var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
             ViewBag.QrCodeUrl = qrCodeUrl;
 
-            // Pass the machine to the view (Bio.cshtml)
             return View(machine);
         }
 
@@ -153,6 +139,100 @@ namespace Project.Controllers
 
                 return File(qrCodeBytes, "image/png");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPdf(int machineId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is empty");
+
+            var machine = await _context.MachineModels
+                .Include(m => m.MachinePdfs)
+                .FirstOrDefaultAsync(m => m.Id == machineId);
+
+            if (machine == null)
+                return NotFound("Machine not found");
+
+            var uploadsFolder = Path.Combine("wwwroot", "pdfs");
+            Directory.CreateDirectory(uploadsFolder); // Ensure directory exists
+            var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            var pdf = new MachinePdf
+            {
+                FileName = file.FileName,
+                ContentType = file.ContentType,
+                Path = filePath,
+                MachineModelId = machineId // Ensure MachineModelId is set correctly
+            };
+
+            _context.MachinePdfs.Add(pdf);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPdf(int id)
+        {
+            var pdf = await _context.MachinePdfs.FindAsync(id);
+            if (pdf == null)
+                return NotFound();
+
+            var filePath = Path.GetFullPath(pdf.Path);
+            if (!System.IO.File.Exists(filePath))
+                return NotFound("File not found on server");
+
+            return PhysicalFile(filePath, pdf.ContentType, pdf.FileName);
+        }
+
+        public async Task<IActionResult> SyncPdfs(int machineId)
+        {
+            var machine = await _context.MachineModels
+                .Include(m => m.MachinePdfs)
+                .FirstOrDefaultAsync(m => m.Id == machineId);
+
+            if (machine == null)
+                return NotFound("Machine not found");
+
+            var uploadsFolder = Path.Combine("wwwroot", "pdfs");
+            var existingFiles = Directory.GetFiles(uploadsFolder).Select(Path.GetFileName).ToList();
+
+            var pdfsToRemove = machine.MachinePdfs.Where(pdf => !existingFiles.Contains(pdf.FileName)).ToList();
+
+            if (pdfsToRemove.Any())
+            {
+                _context.MachinePdfs.RemoveRange(pdfsToRemove);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
+        }
+
+        // Delete a pdf from a machine
+        [HttpPost("deletepdf")]
+        public async Task<IActionResult> DeletePdf(int pdfId)
+        {
+            var pdf = await _context.MachinePdfs
+                .Include(p => p.MachineModel) // Ensure MachineModel is included
+                .FirstOrDefaultAsync(p => p.Id == pdfId);
+
+            if (pdf == null)
+                return NotFound("Pdf not found");
+
+            // Delete the file from the file system
+            if (System.IO.File.Exists(pdf.Path))
+            {
+                System.IO.File.Delete(pdf.Path);
+            }
+
+            _context.MachinePdfs.Remove(pdf);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Bio", new { room = pdf.MachineModel.Room, id = pdf.MachineModel.Id });
         }
     }
 

@@ -20,5 +20,18 @@ namespace Project.Data
         
         // Basicly these are the models that you want to store and get from a table in the database (CRUD operations)
         public DbSet<MachineModel> MachineModels { get; set; }
+        public DbSet<MachinePdf> MachinePdfs { get; set; }
+
+        // Configure the relationships between the entities.
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<MachinePdf>()
+                .HasOne(p => p.MachineModel)
+                .WithMany(m => m.MachinePdfs)
+                .HasForeignKey(p => p.MachineModelId)
+                .OnDelete(DeleteBehavior.Cascade); // Optional: Configure delete behavior
+        }
     }
 }
