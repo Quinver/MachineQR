@@ -36,8 +36,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/Logout";
 });
 
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-
 var app = builder.Build();
 
 // Seed roles
