@@ -142,10 +142,10 @@ namespace Project.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadPdf(int machineId, IFormFile file)
+        public async Task<IActionResult> UploadPdf(int machineId, List<IFormFile> files)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("File is empty");
+            if (files == null || files.Count == 0)
+                return BadRequest("No files selected");
 
             var machine = await _context.MachineModels
                 .Include(m => m.MachinePdfs)
@@ -156,20 +156,28 @@ namespace Project.Controllers
 
             var uploadsFolder = Path.Combine("wwwroot", "pdfs");
             Directory.CreateDirectory(uploadsFolder); // Ensure directory exists
-            var filePath = Path.Combine(uploadsFolder, file.FileName);
 
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
-
-            var pdf = new MachinePdf
+            foreach (var file in files)
             {
-                FileName = file.FileName,
-                ContentType = file.ContentType,
-                Path = filePath,
-                MachineModelId = machineId // Ensure MachineModelId is set correctly
-            };
+                if (file.Length > 0)
+                {
+                    var filePath = Path.Combine(uploadsFolder, file.FileName);
 
-            _context.MachinePdfs.Add(pdf);
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await file.CopyToAsync(stream);
+
+                    var pdf = new MachinePdf
+                    {
+                        FileName = file.FileName,
+                        ContentType = file.ContentType,
+                        Path = filePath,
+                        MachineModelId = machineId // Ensure MachineModelId is set correctly
+                    };
+
+                    _context.MachinePdfs.Add(pdf);
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });

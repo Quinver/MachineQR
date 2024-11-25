@@ -1,4 +1,5 @@
 @model MachineModel
+
 <div class="container">
     <h1>Machine Bio</h1>
     <h2>@Model.Name</h2>
@@ -23,10 +24,13 @@
                             <a asp-action="GetPdf" asp-route-id="@pdf.Id" target="_blank" class="btn btn-primary">View</a>
                             <a asp-action="GetPdf" asp-route-id="@pdf.Id" download="@pdf.FileName"
                                 class="btn btn-secondary">Download</a>
-                            <form asp-action="DeletePdf" method="post" style="display:inline;">
-                                <input type="hidden" name="pdfId" value="@pdf.Id" />
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <form asp-action="DeletePdf" method="post" style="display:inline;">
+                                    <input type="hidden" name="pdfId" value="@pdf.Id" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }
@@ -39,13 +43,16 @@
             }
         </tbody>
     </table>
+    @if (User.IsInRole("Admin"))
+    {
+        <h3>Upload PDF</h3>
+        <form asp-action="UploadPdf" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="hidden" name="machineId" value="@Model.Id" />
+                <input type="file" name="files" class="form-control" accept=".pdf" multiple />
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    }
 
-    <h3>Upload PDF</h3>
-    <form asp-action="UploadPdf" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <input type="hidden" name="machineId" value="@Model.Id" />
-            <input type="file" name="file" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Upload</button>
-    </form>
 </div>
