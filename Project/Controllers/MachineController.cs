@@ -13,6 +13,7 @@ namespace Project.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
         private const string MachinesCacheKey = "MachinesCacheKey";
+        private const string BioCacheKey = "BioCache";
 
         public MachineController(ApplicationDbContext context, IMemoryCache cache)
         {
@@ -64,7 +65,6 @@ namespace Project.Controllers
         {
             return View();
         }
-
         // Post from view to create a new machine
         [HttpPost("create")]
         public IActionResult Create(MachineModel machine)
@@ -80,26 +80,46 @@ namespace Project.Controllers
             return View(machine);
         }
 
-        [HttpGet("refresh")]
-        public IActionResult Refresh()
+        [HttpGet("refreshList")]
+        public IActionResult RefreshList()
         {
-            _cache.Remove(MachinesCacheKey); // Invalidate cache
+            _cache.Remove(MachinesCacheKey); // Invalidate cache for machines
             return RedirectToAction("List");
+        }
+
+        [HttpGet("refreshBio")]
+        public IActionResult RefreshBio(string machineRoom, int machineId)
+        {
+            _cache.Remove(BioCacheKey); // Invalidate cache for bio
+            if (string.IsNullOrEmpty(machineRoom) || machineId <= 0)
+            {
+                return View("NotFound");
+            }
+            return RedirectToAction("Bio", new { Room = machineRoom, Id = machineId });
         }
 
         // For every machine in the database there needs to be a view "Bio"
         [HttpGet("{room}/{id}")]
         public async Task<IActionResult> Bio(string room, int id)
         {
-            var machine = await _context.MachineModels
-                .Include(m => m.MachinePdfs) // Ensure MachinePdfs are included
-                .FirstOrDefaultAsync(m => m.Id == id && m.Room == room);
+            var cacheKey = string.Format(BioCacheKey, room, id);
 
-            if (machine == null)
+            if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
             {
-                return View("NotFound");
-            }
+                machine = await _context.MachineModels
+                    .Include(m => m.MachinePdfs) // Ensure MachinePdfs are included
+                    .FirstOrDefaultAsync(m => m.Id == id && m.Room == room);
 
+                if (machine == null)
+                {
+                    return View("NotFound");
+                }
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5)); // Adjust the expiration time as needed
+
+                _cache.Set(cacheKey, machine, cacheEntryOptions);
+            }
             var qrCodeUrl = Url.Action("Bio", "Machine", new { room, id }, Request.Scheme);
             ViewBag.QrCodeUrl = qrCodeUrl;
 
@@ -109,7 +129,7 @@ namespace Project.Controllers
         [HttpGet("qrcode/{room}/{id}")]
         public IActionResult GenerateQrCode(string room, int id, Size size = Size.small)
         {
-            int dotSize = 5;
+            int dotSize;
             switch (size)
             {
                 case Size.small:
@@ -178,6 +198,8 @@ namespace Project.Controllers
                 }
             }
 
+            _cache.Remove(BioCacheKey);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
@@ -197,29 +219,6 @@ namespace Project.Controllers
             return PhysicalFile(filePath, pdf.ContentType, pdf.FileName);
         }
 
-        public async Task<IActionResult> SyncPdfs(int machineId)
-        {
-            var machine = await _context.MachineModels
-                .Include(m => m.MachinePdfs)
-                .FirstOrDefaultAsync(m => m.Id == machineId);
-
-            if (machine == null)
-                return NotFound("Machine not found");
-
-            var uploadsFolder = Path.Combine("wwwroot", "pdfs");
-            var existingFiles = Directory.GetFiles(uploadsFolder).Select(Path.GetFileName).ToList();
-
-            var pdfsToRemove = machine.MachinePdfs.Where(pdf => !existingFiles.Contains(pdf.FileName)).ToList();
-
-            if (pdfsToRemove.Any())
-            {
-                _context.MachinePdfs.RemoveRange(pdfsToRemove);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
-        }
-
         // Delete a pdf from a machine
         [HttpPost("deletepdf")]
         public async Task<IActionResult> DeletePdf(int pdfId)
@@ -237,9 +236,15 @@ namespace Project.Controllers
                 System.IO.File.Delete(pdf.Path);
             }
 
+            _cache.Remove(BioCacheKey);
+
             _context.MachinePdfs.Remove(pdf);
             await _context.SaveChangesAsync();
 
+            if (pdf.MachineModel == null)
+            {
+                return NotFound("Machine model not found");
+            }
             return RedirectToAction("Bio", new { room = pdf.MachineModel.Room, id = pdf.MachineModel.Id });
         }
     }
