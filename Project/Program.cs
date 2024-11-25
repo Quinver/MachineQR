@@ -7,7 +7,7 @@ using Project.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables from .env file
-Env.Load();
+Env.Load("./.env");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,6 +17,8 @@ builder.Services.AddMemoryCache();
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+Console.WriteLine($"Loaded Connection String: {connectionString}");
 
 // Add Identity with Role Support
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
