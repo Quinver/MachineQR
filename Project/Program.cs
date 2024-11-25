@@ -7,7 +7,7 @@ using Project.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables from .env file
-Env.Load();
+Env.Load("./.env");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -35,8 +35,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Login";
     options.LogoutPath = "/Logout";
 });
-
-builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
