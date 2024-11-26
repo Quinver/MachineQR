@@ -4,6 +4,7 @@
     <h1>Machine Bio</h1>
     <h2>@Model.Name</h2>
     <p>Room: @Model.Room</p>
+    <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })" alt="QR Code" />
 
     <h3>PDFs</h3>
     <button type="button" class="btn btn-primary"

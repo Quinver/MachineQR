@@ -25,7 +25,7 @@ namespace Project.Controllers
         {
             if (!_cache.TryGetValue(MachinesCacheKey, out List<MachineModel>? machines))
             {
-                machines = _context.MachineModels.OrderBy(m => m.Name).ToList();
+                machines = _context.MachineModels?.OrderBy(m => m.Name).ToList() ?? new List<MachineModel>();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5));
@@ -70,7 +70,14 @@ namespace Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.MachineModels.Add(machine);
+                if (_context.MachineModels != null)
+                {
+                    _context.MachineModels.Add(machine);
+                }
+                else
+                {
+                    return View("NotFound");
+                }
                 _context.SaveChanges();
                 _cache.Remove(MachinesCacheKey); // Invalidate cache
                 return RedirectToAction("List");
@@ -113,6 +120,11 @@ namespace Project.Controllers
             string cacheKey = $"Machine_{room}_{id}";
             if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
             {
+                if (_context.MachineModels == null)
+                {
+                    return View("NotFound");
+                }
+
                 machine = await _context.MachineModels
                     .Include(m => m.MachinePdfs) // Ensure MachinePdfs are included
                     .FirstOrDefaultAsync(m => m.Id == id && m.Room == room);
@@ -141,6 +153,11 @@ namespace Project.Controllers
             if (files == null || files.Count == 0)
                 return BadRequest("No files selected");
 
+            if (_context.MachineModels == null)
+            {
+                return NotFound("Machine models not found");
+            }
+
             var machine = await _context.MachineModels
                 .Include(m => m.MachinePdfs)
                 .FirstOrDefaultAsync(m => m.Id == machineId);
@@ -168,7 +185,14 @@ namespace Project.Controllers
                         MachineModelId = machineId // Ensure MachineModelId is set correctly
                     };
 
-                    _context.MachinePdfs.Add(pdf);
+                    if (_context.MachinePdfs != null)
+                    {
+                        _context.MachinePdfs.Add(pdf);
+                    }
+                    else
+                    {
+                        return View("NotFound");
+                    }
                 }
             }
 
@@ -182,6 +206,11 @@ namespace Project.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPdf(int id)
         {
+            if (_context.MachinePdfs == null)
+            {
+                return NotFound("Machine PDFs not found");
+            }
+
             var pdf = await _context.MachinePdfs.FindAsync(id);
             if (pdf == null)
                 return NotFound();
@@ -197,6 +226,11 @@ namespace Project.Controllers
         [HttpPost("deletepdf")]
         public async Task<IActionResult> DeletePdf(int pdfId)
         {
+            if (_context.MachinePdfs == null)
+            {
+                return NotFound("Machine PDFs not found");
+            }
+
             var pdf = await _context.MachinePdfs
                 .Include(p => p.MachineModel) // Ensure MachineModel is included
                 .FirstOrDefaultAsync(p => p.Id == pdfId);
