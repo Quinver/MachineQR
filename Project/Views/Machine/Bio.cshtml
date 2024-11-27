@@ -1,5 +1,16 @@
 @model MachineModel
 
+<style>
+    .border-success {
+        background-color: #f8f9fa;
+    }
+
+    .border-success:hover {
+        background-color: #e9f5e9;
+        cursor: pointer;
+    }
+</style>
+
 <div class="container mt-5">
     <div>
         <h1 class="display-3 font-weight-bold text-primary text-center">Machine Bio</h1>
@@ -8,41 +19,39 @@
     </div>
 
     <!-- Center the QR Code if no image is present -->
-    @if (string.IsNullOrEmpty(Model.ImageUrl)) 
+    @if (string.IsNullOrEmpty(Model.ImageUrl))
     {
-    <div class="d-flex justify-content-center">
-        <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
-             alt="QR Code" class="img-fluid rounded shadow" />
-    </div>
+        <div class="d-flex justify-content-center">
+            <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
+                alt="QR Code" class="img-fluid rounded shadow" />
+        </div>
     }
-    else 
+    else
     {
-    <div class="row mt-4">
-        <!-- QR Code Container -->
-        <div class="col-md-6 d-flex flex-column justify-content-end align-items-center mb-3 mb-md-0">
-            <div class="container text-center">
-                <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
-                    alt="QR Code" class="img-fluid rounded shadow" />
+        <div class="row mt-4">
+            <div class="col-md-6 d-flex flex-column justify-content-end align-items-center mb-3 mb-md-0">
+                <div class="container text-center">
+                    <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
+                        alt="QR Code" class="img-fluid rounded shadow" />
+                </div>
             </div>
-        </div>
 
-        <!-- Placeholder Image Container -->
-        <div class="col-md-6 d-flex flex-column justify-content-end align-items-center">
-            <div class="container text-center">
-                <img src="https://placehold.co/250x250/EEE/31343C" alt="Placeholder" class="img-fluid rounded shadow" />
+            <div class="col-md-6 d-flex flex-column justify-content-end align-items-center">
+                <div class="container text-center">
+                    <img src="https://placehold.co/250x250/EEE/31343C" alt="Placeholder" class="img-fluid rounded shadow" />
+                </div>
             </div>
         </div>
-    </div>
     }
 
     <div class="d-flex align-items-center justify-content-between mt-5">
-        <h3 class="display-6 font-weight-bold mb-2">PDFs</h3>
+        <h3 class="h2 text-muted mb-2">PDFs</h3>
         <button type="button" class="btn btn-primary"
             onclick="location.href='@Url.Action("RefreshBio", "Machine", new { machineRoom = Model.Room, machineId = Model.Id })'">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
     </div>
-    
+
     <table class="table">
         <thead>
             <tr>
@@ -87,28 +96,39 @@
             Upload PDF
         </button>
 
-
         <!-- Bootstrap Modal -->
         <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadModalLabel">Upload PDF</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form asp-action="UploadPdf" method="post" enctype="multipart/form-data" id="upload-form">
-                            <input type="hidden" name="machineId" value="@Model.Id" />
-                            <div class="form-group">
-                                <label for="file-input" class="form-label">Choose PDF Files</label>
-                                <input type="file" name="files" class="form-control" accept=".pdf" multiple
-                                    id="file-input" />
+                    <div class="container mt-4 mb-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="border border-success rounded bg-light d-flex flex-column justify-content-center align-items-center mx-auto"
+                                    style="height: 300px; max-width: 475px;">
+                                    <i class="bi bi-file-earmark-arrow-up text-secondary mb-2" style="font-size: 4rem;"></i>
+                                    <p class="text-secondary mb-0">Bestanden hier naar slepen</p>
+                                </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" form="upload-form">Upload</button>
+                    <div class="modal-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <form asp-action="UploadPdf" method="post" enctype="multipart/form-data" id="upload-form"
+                                class="d-flex align-items-center">
+                                <input type="hidden" name="machineId" value="@Model.Id" />
+                                <!-- Label als styled knop -->
+                                <label for="file-upload" class="btn btn-success me-2">
+                                    Bestanden
+                                </label>
+                                <!-- Verborgen bestandinput -->
+                                <input type="file" name="files" id="file-upload" class="form-control d-none" accept=".pdf"
+                                    multiple />
+                            </form>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" form="upload-form">Upload</button>
+                        </div>
                     </div>
                 </div>
             </div>
