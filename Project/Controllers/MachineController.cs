@@ -208,7 +208,7 @@ namespace Project.Controllers
         {
             if (_context.MachinePdfs == null)
             {
-                return NotFound("Machine PDFs not found");
+                return View("NotFound");
             }
 
             var pdf = await _context.MachinePdfs.FindAsync(id);
@@ -228,7 +228,7 @@ namespace Project.Controllers
         {
             if (_context.MachinePdfs == null)
             {
-                return NotFound("Machine PDFs not found");
+                return View("NotFound");
             }
 
             var pdf = await _context.MachinePdfs
