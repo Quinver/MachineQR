@@ -44,3 +44,11 @@ body {
   background-color: #81BA27;
   border-color: #81BA27;
 }
+
+.text-success {
+  color: #81BA27 !important;
+}
+
+.text-primary {
+  color: #0095D0 !important;
+}
