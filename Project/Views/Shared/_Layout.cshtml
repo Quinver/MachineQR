@@ -10,19 +10,33 @@
     <link rel="stylesheet" href="~/Project.styles.css" asp-append-version="true" />
 
     <style>
+        body {
+            background-color: #f0f0f0; /* Lichtgrijze achtergrondkleur */
+        }
+
         .navbar {
             background-color: #81BA27 !important; /* Maakt de navbar groen */
         }
         .navbar a.nav-link, .navbar a.navbar-brand {
-        color: white !important; /* Zorgt ervoor dat de tekst wit is */
+            color: white !important; /* Zorgt ervoor dat de tekst wit is */
         }
 
-    .footer {
-         background-color: #2a2f35 !important;
-         color: white !important; /* Zorgt ervoor dat de tekst wit is */
+        .footer {
+            background-color: #2a2f35 !important;
+            color: white !important; /* Zorgt ervoor dat de tekst wit is */
+            position: relative; /* Zorg dat positionering mogelijk is */
+            padding: 10px;
+        }
+        .footer-image {
+            height: 50px; /* Pas de grootte van de afbeelding aan */
+            width: auto;
+            position: absolute;
+            bottom: 10px; /* Ruimte vanaf de onderkant */
+            right: 10px; /* Ruimte vanaf de rechterkant */
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
@@ -56,6 +70,7 @@
         <div class="container">
             &copy; 2024 - Project - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
+        <img src="~/huisstijl/TAB2.png" alt="Footer Image" class="footer-image">
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
