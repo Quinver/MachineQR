@@ -17,8 +17,16 @@
         .navbar {
             background-color: #81BA27 !important; /* Maakt de navbar groen */
         }
-        .navbar a.nav-link, .navbar a.navbar-brand {
+       .navbar a.nav-link, .navbar a.navbar-brand {
             color: white !important; /* Zorgt ervoor dat de tekst wit is */
+            padding: 5px; /* Vaste padding om verschuiving te voorkomen */    
+        }
+
+        .navbar a.nav-link:hover, .navbar a.nav-link.active {
+            color: #ffffff !important; /* Verandert tekstkleur naar groen bij hover en actief */
+            background-color: #1c94d4 !important; /* Verandert achtergrond naar wit bij hover en actief */
+            padding: 5px; /* Houdt padding consistent */
+            border-radius: 0; /* Geen afgeronde hoeken */
         }
 
         .footer {
