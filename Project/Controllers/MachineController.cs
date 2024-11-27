@@ -203,6 +203,40 @@ namespace Project.Controllers
             return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(int machineId, IFormFile image)
+        {
+            if (image == null)
+                return BadRequest("No image selected");
+
+            if (_context.MachineModels == null)
+            {
+                return NotFound("Machine models not found");
+            }
+
+            var machine = await _context.MachineModels.FindAsync(machineId);
+            if (machine == null)
+                return NotFound("Machine not found");
+
+            var uploadsFolder = Path.Combine("wwwroot", "images");
+            Directory.CreateDirectory(uploadsFolder); // Ensure directory exists
+
+            if (image.Length > 0)
+            {
+                var filePath = Path.Combine(uploadsFolder, image.FileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await image.CopyToAsync(stream);
+
+                machine. = filePath;
+                await _context.SaveChangesAsync();
+            }
+
+            InvalidateBioCache(machine.Room, machine.Id);
+
+            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPdf(int id)
         {
