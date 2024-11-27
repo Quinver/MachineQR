@@ -19,6 +19,8 @@ namespace Project.Models
         [Display(Name = "Beschrijving")]
         public string? Description { get; set; }
 
+        public string? ImageUrl { get; set; }
+
         public List<MachinePdf> MachinePdfs { get; set; } = new List<MachinePdf>();
     }
 }
