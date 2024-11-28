@@ -8,7 +8,7 @@ namespace Project.Data
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string[] roleNames = { "Admin", "User", "Manager" };
+            string[] roleNames = { "Admin", "User" };
 
             foreach (var roleName in roleNames)
             {

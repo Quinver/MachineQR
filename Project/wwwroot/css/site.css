@@ -20,3 +20,35 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.navbar {
+  background-color: #81BA27 !important;
+  /* Maakt de navbar groen */
+}
+
+.navbar a.nav-link,
+.navbar a.navbar-brand {
+  color: white !important;
+  /* Zorgt ervoor dat de tekst wit is */
+}
+
+/* bootstrap overrides */
+.btn-primary {
+  color: #fff;
+  background-color: #0095D0;
+  border-color: #0095D0;
+}
+
+.btn-success{
+  color: #fff;
+  background-color: #81BA27;
+  border-color: #81BA27;
+}
+
+.text-success {
+  color: #81BA27 !important;
+}
+
+.text-primary {
+  color: #0095D0 !important;
+}
