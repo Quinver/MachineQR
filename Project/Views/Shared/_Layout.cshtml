@@ -17,16 +17,28 @@
         .navbar {
             background-color: #81BA27 !important; /* Maakt de navbar groen */
         }
-       .navbar a.nav-link, .navbar a.navbar-brand {
+
+        .navbar a.nav-link,
+        .navbar a.navbar-brand {
             color: white !important; /* Zorgt ervoor dat de tekst wit is */
-            padding: 5px; /* Vaste padding om verschuiving te voorkomen */    
+            padding: 5px; /* Vaste padding om verschuiving te voorkomen */
         }
 
-        .navbar a.nav-link:hover, .navbar a.nav-link.active {
-            color: #ffffff !important; /* Verandert tekstkleur naar groen bij hover en actief */
-            background-color: #1c94d4 !important; /* Verandert achtergrond naar wit bij hover en actief */
+        .navbar a.nav-link:hover,
+        .navbar a.nav-link.active {
+            color: #ffffff !important; /* Verandert tekstkleur naar wit bij hover en actief */
+            background-color: #1c94d4 !important; /* Verandert achtergrond bij hover en actief */
             padding: 5px; /* Houdt padding consistent */
             border-radius: 0; /* Geen afgeronde hoeken */
+        }
+
+        .navbar-logo {
+            height: 60px; /* Pas de hoogte van het logo aan */
+            width: auto; /* Houd de verhoudingen van de afbeelding intact */
+        }
+
+        .navbar-brand {
+            padding: 0; /* Verwijder extra padding rond de afbeelding */
         }
 
         .footer {
@@ -35,6 +47,7 @@
             position: relative; /* Zorg dat positionering mogelijk is */
             padding: 10px;
         }
+
         .footer-image {
             height: 50px; /* Pas de grootte van de afbeelding aan */
             width: auto;
@@ -49,9 +62,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Project</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/huisstijl/logo2.png" alt="Project Logo" class="navbar-logo">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -85,4 +100,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
