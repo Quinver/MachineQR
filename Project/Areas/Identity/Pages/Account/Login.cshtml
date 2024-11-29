@@ -19,14 +19,11 @@
                     <label asp-for="Input.Email" class="form-label">Email</label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-                <div class="form-floating mb-3 position-relative">
+                <div class="form-floating mb-3">
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
-                        aria-required="true" placeholder="password" id="password" />
+                        aria-required="true" placeholder="password" />
                     <label asp-for="Input.Password" class="form-label">Password</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePasswordVisibility()">
-                        <i class="bi bi-eye" id="togglePasswordIcon"></i>
-                    </span>
                 </div>
                 <div class="checkbox mb-3">
                     <label asp-for="Input.RememberMe" class="form-label">
@@ -61,25 +58,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        function togglePasswordVisibility() {
-            var passwordInput = document.getElementById("password");
-            var togglePasswordIcon = document.getElementById("togglePasswordIcon");
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                togglePasswordIcon.classList.remove("bi-eye");
-                togglePasswordIcon.classList.add("bi-eye-slash");
-            } else {
-                passwordInput.type = "password";
-                togglePasswordIcon.classList.remove("bi-eye-slash");
-                togglePasswordIcon.classList.add("bi-eye");
-            }
-        }
-    </script>
 }
-
-<style>
-    .cursor-pointer {
-        cursor: pointer;
-    }
-</style>

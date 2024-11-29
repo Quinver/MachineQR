@@ -12,8 +12,8 @@ namespace Project.Data
         }
         
         // Add the DbSet properties for the entities that you want to include in the database.
-        public DbSet<MachineModel>? MachineModels { get; set; }
-        public DbSet<MachinePdf>? MachinePdfs { get; set; }
+        public DbSet<MachineModel> MachineModels { get; set; }
+        public DbSet<MachinePdf> MachinePdfs { get; set; }
 
         // Configure the relationships between the entities.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
