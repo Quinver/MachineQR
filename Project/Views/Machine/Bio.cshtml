@@ -19,6 +19,7 @@
     </div>
 
     <!-- Center the QR Code if no image is present -->
+    using Microsoft.CodeAnalysis.Scripting;
     @if (string.IsNullOrEmpty(Model.ImageUrl))
     {
         <div class="d-flex justify-content-center">
@@ -89,9 +90,9 @@
             }
         </tbody>
     </table>
+
     @if (User.IsInRole("Admin"))
     {
-
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
             Upload PDF
         </button>
@@ -103,10 +104,12 @@
                     <div class="container mt-4 mb-3">
                         <div class="row">
                             <div class="col-12">
-                                <div class="border border-success rounded bg-light d-flex flex-column justify-content-center align-items-center mx-auto"
+                                <div id="drop-zone"
+                                    class="border border-success rounded bg-light d-flex flex-column justify-content-center align-items-center mx-auto"
                                     style="height: 300px; max-width: 475px;">
                                     <i class="bi bi-file-earmark-arrow-up text-secondary mb-2" style="font-size: 4rem;"></i>
                                     <p class="text-secondary mb-0">Bestanden hier naar slepen</p>
+                                    <ul id="file-list" class="list-unstyled mt-3"></ul>
                                 </div>
                             </div>
                         </div>
@@ -116,13 +119,9 @@
                             <form asp-action="UploadPdf" method="post" enctype="multipart/form-data" id="upload-form"
                                 class="d-flex align-items-center">
                                 <input type="hidden" name="machineId" value="@Model.Id" />
-                                <!-- Label als styled knop -->
-                                <label for="file-upload" class="btn btn-success me-2">
-                                    Bestanden
-                                </label>
-                                <!-- Verborgen bestandinput -->
                                 <input type="file" name="files" id="file-upload" class="form-control d-none" accept=".pdf"
                                     multiple />
+                                <label for="file-upload" class="btn btn-success me-2">Bestanden</label>
                             </form>
                         </div>
                         <div>
@@ -134,5 +133,60 @@
             </div>
         </div>
     }
-
 </div>
+
+@section Scripts {
+    <!-- dropzone script-->
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-upload');
+        const fileList = document.getElementById('file-list');
+        const form = document.getElementById('upload-form');
+
+        let uploadedFiles = [];
+
+        function updateFileList(files) {
+            fileList.innerHTML = '';
+            files.forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = file.name;
+                fileList.appendChild(li);
+            });
+        }
+
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('border-primary');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-primary');
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('border-primary');
+
+            const newFiles = Array.from(event.dataTransfer.files);
+            uploadedFiles = [...uploadedFiles, ...newFiles];
+
+            updateFileList(uploadedFiles);
+
+            const dataTransfer = new DataTransfer();
+            uploadedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        });
+
+        // Handle manual file input
+        fileInput.addEventListener('change', () => {
+            const newFiles = Array.from(fileInput.files);
+            uploadedFiles = [...uploadedFiles, ...newFiles];
+
+            updateFileList(uploadedFiles);
+
+            const dataTransfer = new DataTransfer();
+            uploadedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        });
+    </script>
+}
