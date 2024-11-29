@@ -230,7 +230,7 @@
             const room = '@Model.Room';
             const id = '@Model.Id';
 
-            const qrCodeUrl = `/machine/qrcode/${room}/${id}?size=small`;
+            const qrCodeUrl = `/machine/qrcode/${room}/${id}?size=large`;
             const printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Print QR Codes</title></head><body><div class="grid-container"><style>');
             printWindow.document.write(`
