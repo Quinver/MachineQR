@@ -1,19 +1,35 @@
 @model MachineModel
 
+<style>
+    .fixed-height-image {
+        height: 300px;
+        /* Set your desired fixed height */
+        object-fit: cover;
+        /* Maintain aspect ratio and cover the area */
+    }
+
+    .qr-code {
+        margin: 10px;
+    }
+</style>
+
 <div class="container mt-5">
     <div>
         <h1 class="display-3 font-weight-bold text-primary text-center">Machine Bio</h1>
         <h2 class="h3 text-muted mt-4">@Model.Name</h2>
         <p class="lead">Room: @Model.Room</p>
     </div>
-    <form asp-action="upload-image" method="post" enctype="multipart/form-data" id="upload-form">
-        <input type="hidden" name="machineId" value="@Model.Id" />
-        <div class="form-group">
-            <label for="file-input" class="form-label">Choose Image File</label>
-            <input type="file" name="image" class="form-control" id="file-input" />
-        </div>
-        <button type="submit" class="btn btn-primary" value="submit">Submit</button>
-    </form>
+    @if (User.IsInRole("Admin"))
+    {
+        <form asp-action="upload-image" method="post" enctype="multipart/form-data" id="upload-form">
+            <input type="hidden" name="machineId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="file-input" class="form-label">Choose Image File</label>
+                <input type="file" name="image" class="form-control" id="file-input" />
+            </div>
+            <button type="submit" class="btn btn-primary" value="submit">Submit</button>
+        </form>
+    }
     <!-- Center the QR Code if no image is present -->
     @if (string.IsNullOrEmpty(Model.ImageUrl))
     {
@@ -21,7 +37,6 @@
             <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
                 alt="QR Code" class="img-fluid rounded shadow" />
         </div>
-
     }
     else
     {
@@ -30,15 +45,22 @@
             <div class="col-md-6 d-flex flex-column justify-content-end align-items-center mb-3 mb-md-0">
                 <div class="container text-center">
                     <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
-                        alt="QR Code" class="img-fluid rounded shadow" />
+                        alt="QR Code" class="img-fluid rounded shadow fixed-height-image" />
                 </div>
             </div>
 
-            <!-- Placeholder Image Container -->
+            <div class="form-group">
+                <label for="qr-quantity" class="form-label">Number of QR Codes to Print</label>
+                <input type="hidden" id="qr-code-url" value="@Model.ImageUrl" />
+                <input type="number" id="qr-quantity" class="form-control" min="1" value="1" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="printQRCodes()">Print QR Codes</button>
+
+            <!-- Image Container -->
             <div class="col-md-6 d-flex flex-column justify-content-end align-items-center">
                 <div class="container text-center">
                     <img src="@Url.Action("GetImage", "Machine", new { id = Model.Id })" alt="Machine Image"
-                        class="img-fluid rounded shadow" />
+                        class="img-fluid rounded shadow fixed-height-image" />
                 </div>
             </div>
             @if (User.IsInRole("Admin"))
@@ -131,3 +153,43 @@
     }
 
 </div>
+
+@section Scripts {
+    <script>
+        function printQRCodes() {
+            const quantity = document.getElementById('qr-quantity').value;
+
+            const room = '@Model.Room';
+            const id = '@Model.Id';
+
+            const qrCodeUrl = `/machine/qrcode/${room}/${id}?size=small`;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Print QR Codes</title></head><body><div class="grid-container"><style>');
+            printWindow.document.write(`
+                .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          }
+
+          .grid-item {
+            padding: 5px;
+          }
+
+          .grid-item img {
+            width: 100%;
+          }</style>`);
+            for (let i = 0; i < quantity; i++) {
+                printWindow.document.write('<div class="qr-code grid-item"><img src="' + qrCodeUrl + '" alt="QR Code" /></div>');
+            }
+
+            printWindow.document.write('</div></body></html>');
+            printWindow.document.close();
+            printWindow.onafterprint = function () {
+                printWindow.close();
+            };
+            window.setTimeout(() => {
+                printWindow.print();
+            }, 50);
+        }
+    </script>
+}

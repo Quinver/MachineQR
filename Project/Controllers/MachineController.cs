@@ -223,6 +223,12 @@ namespace Project.Controllers
 
             if (image.Length > 0)
             {
+                // Delete the existing image if it exists
+                if (!string.IsNullOrEmpty(machine.ImageUrl) && System.IO.File.Exists(machine.ImageUrl))
+                {
+                    System.IO.File.Delete(machine.ImageUrl);
+                }
+                
                 var filePath = Path.Combine(uploadsFolder, image.FileName);
 
                 using var stream = new FileStream(filePath, FileMode.Create);
