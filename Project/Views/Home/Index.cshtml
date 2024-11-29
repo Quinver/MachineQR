@@ -1,15 +1,26 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
-        .btn-custom{
-             padding: 1em 2em;
+        .display-4 {
+            font-family: 'Arial Nova', Arial, sans-serif;
+            font-weight: bold; /* Zorgt ervoor dat de tekst vetgedrukt is */
+            font-size: 2.5em; /* Maak de tekst iets groter */
+            margin-top: 50px; /* Zet de tekst verder naar beneden */
+        }
+
+        .subtext {
+            font-family: 'Arial Nova', Arial, sans-serif;
+            font-size: 1.2em; /* Zorg dat het iets kleiner is dan de hoofdtekst */
+            color: #1c94d4; /* Donkere grijstint voor subtiele uitstraling */
+            margin: 15px 0; /* Ruimte tussen de subtekst en andere elementen */
+        }
+
+        .btn-custom {
+            padding: 1em 2em;
             background-color: #81BA27;
             color: white;
             border: none;
@@ -17,20 +28,41 @@
             cursor: pointer;
             font-size: 1em;
             margin: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Animatie voor een vloeiende overgang */
+        }
+
+        .btn-custom:hover {
+            background-color: #1c94d4; /* Donkerdere groen op hover */
+            transform: scale(1.05); /* Licht vergroten */
+            color: #f9f9f9; /* Optioneel: kleur aanpassen op hover */
+        }
+
+        .page-logo {
+            margin-top: 20px; /* Ruimte tussen de knop en de afbeelding */
+            max-width: 300px; /* Vergrootte maximale breedte van de afbeelding */
+            height: auto; /* Zorg dat de hoogte proportioneel blijft */
+            display: block; /* Zorgt ervoor dat de afbeelding op een nieuwe regel verschijnt */
+            margin-left: auto; /* Centreer de afbeelding horizontaal */
+            margin-right: auto; /* Centreer de afbeelding horizontaal */
         }
     </style>
 </head>
 
 <body>
-
     <div class="text-center">
-        <h1 class="display-4">Welkom</h1>
+        <h1 class="display-4">Welkom bij Machine-QR</h1>
         
-        <!-- Ruimte toevoegen -->
+        <!-- Subtext -->
+        <p class="subtext">Klik hier om naar je overzicht te gaan</p>
+        
+        <!-- Ruimte -->
         <div class="spacer"></div>
 
         <!-- Link naar Machine List -->
-        <a asp-controller="Machine" asp-action="List" class="btn btn-custom">Machine List</a>
+        <a asp-controller="Machine" asp-action="Index" class="btn btn-custom">Machine List</a>
+
+        <!-- Afbeelding onder de knop -->
+        <img src="~/huisstijl/Visual1.png" alt="Project Logo" class="page-logo">
     </div>
 </body>
 </html>
