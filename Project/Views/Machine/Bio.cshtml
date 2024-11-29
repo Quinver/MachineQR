@@ -1,7 +1,6 @@
 @model MachineModel
 
 <style>
-
     .border-success {
         background-color: #f8f9fa;
     }
@@ -9,7 +8,8 @@
     .border-success:hover {
         background-color: #e9f5e9;
         cursor: pointer;
-      
+    }
+
     .fixed-height-image {
         height: 300px;
         /* Set your desired fixed height */
@@ -234,18 +234,18 @@
             const printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Print QR Codes</title></head><body><div class="grid-container"><style>');
             printWindow.document.write(`
-                .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-          }
+                            .grid-container {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                      }
 
-          .grid-item {
-            padding: 5px;
-          }
+                      .grid-item {
+                        padding: 5px;
+                      }
 
-          .grid-item img {
-            width: 100%;
-          }</style>`);
+                      .grid-item img {
+                        width: 100%;
+                      }</style>`);
             for (let i = 0; i < quantity; i++) {
                 printWindow.document.write('<div class="qr-code grid-item"><img src="' + qrCodeUrl + '" alt="QR Code" /></div>');
             }
