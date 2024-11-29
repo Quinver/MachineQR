@@ -11,31 +11,34 @@
     <link rel="stylesheet" href="~/Project.styles.css" asp-append-version="true" />
 
     <style>
+
         body {
-            background-color: #f0f0f0; /* Lichtgrijze achtergrondkleur */
+        background-color: #f0f0f0; /* Lichtgrijze achtergrondkleur */
         }
 
         .navbar {
             background-color: #81BA27 !important; /* Maakt de navbar groen */
-            padding: 5px 10px; /* Vermindert de padding om de hoogte te reduceren */
+            padding: 2px 10px; /* Verminder de padding om de hoogte te reduceren */
         }
 
         .navbar a.nav-link,
         .navbar a.navbar-brand {
             color: white !important; /* Zorgt ervoor dat de tekst wit is */
-            padding: 2px 5px; /* Vermindert padding van de links */
+            padding: 5px 10px; /* Verminder de padding van de links om de navbar dunner te maken */
+            text-decoration: none; /* Verwijdert de onderstreping */
+            display: block; /* Zorgt ervoor dat de links op een nieuwe regel verschijnen */
         }
 
         .navbar a.nav-link:hover,
         .navbar a.nav-link.active {
             color: #ffffff !important; /* Verandert tekstkleur naar wit bij hover en actief */
             background-color: #1c94d4 !important; /* Verandert achtergrond bij hover en actief */
-            padding: 2px 5px; /* Houdt consistent met bovenstaand */
+            padding: 5px 10px; /* Houdt de padding consistent */
             border-radius: 0; /* Geen afgeronde hoeken */
         }
 
         .navbar-logo {
-            height: 40px; /* Verminderde hoogte van het logo */
+            height: 40px; /* Verminderde hoogte van het logo voor een dunnere navbar */
             width: auto; /* Houd de verhoudingen van de afbeelding intact */
         }
 
