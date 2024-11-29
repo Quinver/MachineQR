@@ -17,24 +17,25 @@
 
         .navbar {
             background-color: #81BA27 !important; /* Maakt de navbar groen */
+            padding: 5px 10px; /* Vermindert de padding om de hoogte te reduceren */
         }
 
         .navbar a.nav-link,
         .navbar a.navbar-brand {
             color: white !important; /* Zorgt ervoor dat de tekst wit is */
-            padding: 5px; /* Vaste padding om verschuiving te voorkomen */
+            padding: 2px 5px; /* Vermindert padding van de links */
         }
 
         .navbar a.nav-link:hover,
         .navbar a.nav-link.active {
             color: #ffffff !important; /* Verandert tekstkleur naar wit bij hover en actief */
             background-color: #1c94d4 !important; /* Verandert achtergrond bij hover en actief */
-            padding: 5px; /* Houdt padding consistent */
+            padding: 2px 5px; /* Houdt consistent met bovenstaand */
             border-radius: 0; /* Geen afgeronde hoeken */
         }
 
         .navbar-logo {
-            height: 60px; /* Pas de hoogte van het logo aan */
+            height: 40px; /* Verminderde hoogte van het logo */
             width: auto; /* Houd de verhoudingen van de afbeelding intact */
         }
 
@@ -46,15 +47,15 @@
             background-color: #2a2f35 !important;
             color: white !important; /* Zorgt ervoor dat de tekst wit is */
             position: relative; /* Zorg dat positionering mogelijk is */
-            padding: 10px;
+            padding: 5px; /* Verminderde padding voor minder dikte */
         }
 
         .footer-image {
-            height: 50px; /* Pas de grootte van de afbeelding aan */
+            height: 50px; /* Verkleinde hoogte van de afbeelding */
             width: auto;
             position: absolute;
-            bottom: 10px; /* Ruimte vanaf de onderkant */
-            right: 10px; /* Ruimte vanaf de rechterkant */
+            bottom: 5px; /* Ruimte vanaf de onderkant */
+            right: 5px; /* Ruimte vanaf de rechterkant */
         }
     </style>
 </head>
@@ -83,7 +84,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                 asp-action="Privacy">Privacy</a>
                         </li>
-
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
