@@ -25,7 +25,7 @@ namespace Project.Controllers
         {
             if (!_cache.TryGetValue(MachinesCacheKey, out List<MachineModel>? machines))
             {
-                machines = _context.MachineModels?.OrderBy(m => m.Name).ToList() ?? new List<MachineModel>();
+                machines = _context.MachineModels.OrderBy(m => m.Name).ToList();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5));
@@ -70,14 +70,7 @@ namespace Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.MachineModels != null)
-                {
-                    _context.MachineModels.Add(machine);
-                }
-                else
-                {
-                    return View("NotFound");
-                }
+                _context.MachineModels.Add(machine);
                 _context.SaveChanges();
                 _cache.Remove(MachinesCacheKey); // Invalidate cache
                 return RedirectToAction("List");
@@ -120,11 +113,6 @@ namespace Project.Controllers
             string cacheKey = $"Machine_{room}_{id}";
             if (!_cache.TryGetValue(cacheKey, out MachineModel? machine))
             {
-                if (_context.MachineModels == null)
-                {
-                    return View("NotFound");
-                }
-
                 machine = await _context.MachineModels
                     .Include(m => m.MachinePdfs) // Ensure MachinePdfs are included
                     .FirstOrDefaultAsync(m => m.Id == id && m.Room == room);
@@ -147,16 +135,11 @@ namespace Project.Controllers
         }
 
 
-        [HttpPost("upload-pdf")]
+        [HttpPost]
         public async Task<IActionResult> UploadPdf(int machineId, List<IFormFile> files)
         {
             if (files == null || files.Count == 0)
                 return BadRequest("No files selected");
-
-            if (_context.MachineModels == null)
-            {
-                return NotFound("Machine models not found");
-            }
 
             var machine = await _context.MachineModels
                 .Include(m => m.MachinePdfs)
@@ -185,14 +168,7 @@ namespace Project.Controllers
                         MachineModelId = machineId // Ensure MachineModelId is set correctly
                     };
 
-                    if (_context.MachinePdfs != null)
-                    {
-                        _context.MachinePdfs.Add(pdf);
-                    }
-                    else
-                    {
-                        return View("NotFound");
-                    }
+                    _context.MachinePdfs.Add(pdf);
                 }
             }
 
@@ -203,48 +179,9 @@ namespace Project.Controllers
             return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
         }
 
-        [HttpPost("upload-image")]
-        public async Task<IActionResult> UploadImage(int machineId, IFormFile image)
-        {
-            if (image == null)
-                return BadRequest("No image selected");
-
-            if (_context.MachineModels == null)
-            {
-                return NotFound("Machine models not found");
-            }
-
-            var machine = await _context.MachineModels.FindAsync(machineId);
-            if (machine == null)
-                return NotFound("Machine not found");
-
-            var uploadsFolder = Path.Combine("wwwroot", "images");
-            Directory.CreateDirectory(uploadsFolder); // Ensure directory exists
-
-            if (image.Length > 0)
-            {
-                var filePath = Path.Combine(uploadsFolder, image.FileName);
-
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await image.CopyToAsync(stream);
-
-                machine.ImageUrl = filePath;
-                await _context.SaveChangesAsync();
-            }
-
-            InvalidateBioCache(machine.Room, machine.Id);
-
-            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
-        }
-
-        [HttpGet("pdf/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPdf(int id)
         {
-            if (_context.MachinePdfs == null)
-            {
-                return View("NotFound");
-            }
-
             var pdf = await _context.MachinePdfs.FindAsync(id);
             if (pdf == null)
                 return NotFound();
@@ -256,38 +193,10 @@ namespace Project.Controllers
             return PhysicalFile(filePath, pdf.ContentType, pdf.FileName);
         }
 
-        [HttpGet("images/{id}")]
-        public async Task<IActionResult> GetImage(int id)
-        {
-            if (_context.MachineModels == null)
-            {
-                return View("NotFound");
-            }
-
-            var machine = await _context.MachineModels.FindAsync(id);
-            if (machine == null)
-                return NotFound();
-
-            if (string.IsNullOrEmpty(machine.ImageUrl))
-            {
-                return NotFound("Image URL is null or empty");
-            }
-            var filePath = Path.GetFullPath(machine.ImageUrl);
-            if (!System.IO.File.Exists(filePath))
-                return NotFound("File not found on server");
-
-            return PhysicalFile(filePath, "image/jpeg");
-        }
-
         // Delete a pdf from a machine
         [HttpPost("deletepdf")]
         public async Task<IActionResult> DeletePdf(int pdfId)
         {
-            if (_context.MachinePdfs == null)
-            {
-                return View("NotFound");
-            }
-
             var pdf = await _context.MachinePdfs
                 .Include(p => p.MachineModel) // Ensure MachineModel is included
                 .FirstOrDefaultAsync(p => p.Id == pdfId);
@@ -312,36 +221,6 @@ namespace Project.Controllers
             InvalidateBioCache(pdf.MachineModel.Room, pdf.MachineModel.Id);
 
             return RedirectToAction("Bio", new { room = pdf.MachineModel.Room, id = pdf.MachineModel.Id });
-        }
-
-        [HttpPost("deleteimage")]
-        public async Task<IActionResult> DeleteImage(int machineId)
-        {
-            if (_context.MachineModels == null)
-            {
-                return View("NotFound");
-            }
-
-            var machine = await _context.MachineModels.FindAsync(machineId);
-            if (machine == null)
-                return NotFound("Machine not found");
-
-            if (string.IsNullOrEmpty(machine.ImageUrl))
-            {
-                return NotFound("Image URL is null or empty");
-            }
-
-            if (System.IO.File.Exists(machine.ImageUrl))
-            {
-                System.IO.File.Delete(machine.ImageUrl);
-            }
-
-            machine.ImageUrl = null;
-            await _context.SaveChangesAsync();
-
-            InvalidateBioCache(machine.Room, machine.Id);
-
-            return RedirectToAction("Bio", new { room = machine.Room, id = machine.Id });
         }
 
         [HttpGet("qrcode/{room}/{id}")]
