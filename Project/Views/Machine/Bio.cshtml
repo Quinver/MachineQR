@@ -38,9 +38,15 @@
             </div>
             <button type="submit" class="btn btn-primary" value="submit">Submit</button>
         </form>
+
+        <!-- QR-Code Printing -->
+        <label for="qr-quantity" class="">Number of QR Codes to Print</label>
+        <input type="hidden" id="qr-code-url" value="@Model.ImageUrl" />
+        <input type="number" id="qr-quantity" class="" min="1" value="1" />
+        <button type="button" class="btn btn-primary" onclick="printQRCodes()">Print QR Codes</button>
     }
     <!-- Center the QR Code if no image is present -->
-    @if (string.IsNullOrEmpty(Model.ImageUrl))
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {
         <div class="d-flex justify-content-center">
             <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
@@ -49,20 +55,15 @@
     }
     else
     {
+        <!-- Image Container-->
         <div class="row mt-4">
             <div class="col-md-6 d-flex flex-column justify-content-end align-items-center mb-3 mb-md-0">
                 <div class="container text-center">
+                    <!-- QR-code image -->
                     <img src="@Url.Action("GenerateQrCode", "Machine", new { room = Model.Room, id = Model.Id, size = "small" })"
                         alt="QR Code" class="img-fluid rounded shadow fixed-height-image" />
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="qr-quantity" class="form-label">Number of QR Codes to Print</label>
-                <input type="hidden" id="qr-code-url" value="@Model.ImageUrl" />
-                <input type="number" id="qr-quantity" class="form-control" min="1" value="1" />
-            </div>
-            <button type="button" class="btn btn-primary" onclick="printQRCodes()">Print QR Codes</button>
 
             <!-- Image Container -->
             <div class="col-md-6 d-flex flex-column justify-content-end align-items-center">
@@ -234,22 +235,22 @@
             const printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Print QR Codes</title></head><body><div class="grid-container">');
             printWindow.document.write(`
-                        <style>
-                        .grid-container {
-                            display: grid;
-                            grid-template-columns: repeat(auto-fill, minmax(8cm, 1fr));
-                            gap: 10px;
-                        }
+                                <style>
+                                .grid-container {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fill, minmax(8cm, 1fr));
+                                    gap: 10px;
+                                }
 
-                        .grid-item {
-                            padding: 5px;
-                        }
+                                .grid-item {
+                                    padding: 5px;
+                                }
 
-                        .grid-item img {
-                            width: 100%;
-                            height: auto;
-                        }
-                        </style>`);
+                                .grid-item img {
+                                    width: 100%;
+                                    height: auto;
+                                }
+                                </style>`);
             for (let i = 0; i < quantity; i++) {
                 printWindow.document.write('<div class="qr-code grid-item"><img src="' + qrCodeUrl + '" alt="QR Code" /></div>');
             }
