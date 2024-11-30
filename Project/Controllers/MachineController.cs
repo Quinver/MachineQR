@@ -224,17 +224,18 @@ namespace Project.Controllers
             if (image.Length > 0)
             {
                 // Delete the existing image if it exists
-                if (!string.IsNullOrEmpty(machine.ImageUrl) && System.IO.File.Exists(machine.ImageUrl))
+                if (!string.IsNullOrEmpty(machine.ImageUrl) && System.IO.File.Exists(Path.Combine("wwwroot", machine.ImageUrl)))
                 {
-                    System.IO.File.Delete(machine.ImageUrl);
+                    System.IO.File.Delete(Path.Combine("wwwroot", machine.ImageUrl));
                 }
-                
+
+                var relativePath = Path.Combine("images", image.FileName);
                 var filePath = Path.Combine(uploadsFolder, image.FileName);
 
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await image.CopyToAsync(stream);
 
-                machine.ImageUrl = filePath;
+                machine.ImageUrl = relativePath;
                 await _context.SaveChangesAsync();
             }
 
@@ -260,29 +261,6 @@ namespace Project.Controllers
                 return NotFound("File not found on server");
 
             return PhysicalFile(filePath, pdf.ContentType, pdf.FileName);
-        }
-
-        [HttpGet("images/{id}")]
-        public async Task<IActionResult> GetImage(int id)
-        {
-            if (_context.MachineModels == null)
-            {
-                return View("NotFound");
-            }
-
-            var machine = await _context.MachineModels.FindAsync(id);
-            if (machine == null)
-                return NotFound();
-
-            if (string.IsNullOrEmpty(machine.ImageUrl))
-            {
-                return NotFound("Image URL is null or empty");
-            }
-            var filePath = Path.GetFullPath(machine.ImageUrl);
-            if (!System.IO.File.Exists(filePath))
-                return NotFound("File not found on server");
-
-            return PhysicalFile(filePath, "image/jpeg");
         }
 
         // Delete a pdf from a machine
