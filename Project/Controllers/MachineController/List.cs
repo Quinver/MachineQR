@@ -39,7 +39,7 @@ namespace Project.Controllers
         [HttpGet("refreshList")]
         public IActionResult RefreshList()
         {
-            _cache.Remove(MachinesCacheKey); // Invalidate cache for machines
+            InvalidateListCache(); // Invalidate cache for machines
             return RedirectToAction("List");
         }
     }

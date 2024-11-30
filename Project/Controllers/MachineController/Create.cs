@@ -27,7 +27,7 @@ namespace Project.Controllers
                     return View("NotFound");
                 }
                 _context.SaveChanges();
-                _cache.Remove(MachinesCacheKey); // Invalidate cache
+                InvalidateListCache(); // Invalidate cache
                 return RedirectToAction("List");
             }
 

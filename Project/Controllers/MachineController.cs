@@ -4,6 +4,7 @@ using Project.Models;
 using QRCoder;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Bson;
 
 namespace Project.Controllers
 {
@@ -24,6 +25,10 @@ namespace Project.Controllers
         {
             string cacheKey = $"Machine_{room}_{id}";
             _cache.Remove(cacheKey);
+        }
+        private void InvalidateListCache()
+        {
+            _cache.Remove(MachinesCacheKey);
         }
     }
 }
