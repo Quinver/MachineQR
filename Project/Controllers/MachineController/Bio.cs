@@ -39,5 +39,20 @@ namespace Project.Controllers
 
             return View(machine);
         }
+
+        [HttpGet("refreshBio")]
+        public IActionResult RefreshBio(string machineRoom, int machineId)
+        {
+            if (string.IsNullOrEmpty(machineRoom) || machineId <= 0)
+            {
+                return View("NotFound");
+            }
+
+            // Invalidate the cache
+            InvalidateBioCache(machineRoom, machineId);
+
+            return RedirectToAction("Bio", new { room = machineRoom, id = machineId });
+        }
+
     }
 }
