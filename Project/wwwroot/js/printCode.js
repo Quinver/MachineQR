@@ -1,8 +1,8 @@
 function printQRCodes() {
   const quantity = document.getElementById("qr-quantity").value;
 
-  const room = "@Model.Room";
-  const id = "@Model.Id";
+  const room = document.getElementById("room").value;
+  const id = document.getElementById("id").value;
 
   const qrCodeUrl = `/machine/qrcode/${room}/${id}`;
   const printWindow = window.open("", "_blank");
