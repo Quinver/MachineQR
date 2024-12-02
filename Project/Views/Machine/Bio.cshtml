@@ -81,16 +81,15 @@
                     <img src="@Url.Content("~/" + Model.ImageUrl)" alt="Machine Image"
                         class="img-fluid rounded shadow fixed-height-image">
 
-
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-action="deleteimage" method="post" style="display:inline;">
+                            <input type="hidden" name="machineId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    }
                 </div>
             </div>
-            @if (User.IsInRole("Admin"))
-            {
-                <form asp-action="deleteimage" method="post" style="display:inline;">
-                    <input type="hidden" name="machineId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            }
         </div>
     }
 

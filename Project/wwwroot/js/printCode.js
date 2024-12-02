@@ -1,10 +1,12 @@
 function printQRCodes() {
-  const quantity = document.getElementById("qr-quantity").value;
+  let quantity = document.getElementById("qr-quantity").value;
 
+  if (quantity > 100) {
+    quantity = 100;
+  }
   const room = document.getElementById("room").value;
   const id = document.getElementById("id").value;
 
-  const qrCodeUrl = `/machine/qrcode/${room}/${id}`;
   const printWindow = window.open("", "_blank");
   printWindow.document.write(
     '<html><head><title>Print QR Codes</title></head><body><div class="grid-container">'
@@ -36,6 +38,8 @@ function printQRCodes() {
 
   printWindow.document.write("</div></body></html>");
 
-  printWindow.print();
-  printWindow.close();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 20);
 }
