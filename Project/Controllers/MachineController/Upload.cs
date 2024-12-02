@@ -119,7 +119,12 @@ namespace Project.Controllers
             if (!System.IO.File.Exists(filePath))
                 return NotFound("File not found on server");
 
-            return PhysicalFile(filePath, pdf.ContentType, pdf.FileName);
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+            // Manually set headers to force inline viewing
+            Response.Headers.Append("Content-Disposition", $"inline; filename=\"{pdf.FileName}\"");
+            return File(fileBytes, pdf.ContentType);
         }
+
     }
 }
