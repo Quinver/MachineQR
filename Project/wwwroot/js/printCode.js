@@ -6,6 +6,7 @@ function printQRCodes() {
   }
   const room = document.getElementById("room").value;
   const id = document.getElementById("id").value;
+  const qrCodeUrl = "/machine/qrcode/" + room + "/" + id;
 
   const printWindow = window.open("", "_blank");
   printWindow.document.write(
