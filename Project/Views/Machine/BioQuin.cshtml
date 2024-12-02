@@ -19,6 +19,7 @@
             </tr>
         </thead>
         <tbody>
+        @* Display PDFs *@
             @if (Model.MachinePdfs != null && Model.MachinePdfs.Any())
             {
                 @foreach (var pdf in Model.MachinePdfs)
