@@ -1,7 +1,7 @@
 @model MachineModel
 
 <style>
-    .border-success {
+      .border-success {
         background-color: #f8f9fa;
     }
 
@@ -12,19 +12,20 @@
 
     .fixed-height-image {
         height: 300px;
-        /* Set your desired fixed height */
         object-fit: cover;
-        /* Maintain aspect ratio and cover the area */
     }
 
     .qr-code {
         margin: 10px;
     }
+
+    
+
 </style>
 
 <div class="container mt-5">
     <div>
-        <h1 class="display-3 font-weight-bold text-primary text-center">Machine Bio</h1>
+        <h1 class="display-3">Machine Bio</h1>
         <h2 class="h3 text-muted mt-4">@Model.Name</h2>
         <p class="lead">Room: @Model.Room</p>
     </div>
@@ -192,3 +193,6 @@
     <!-- Print QR Code script -->
     <script src="~/js/printCode.js?v=1.0.2"></script>
 }
+<div class="content" style="margin-bottom: 50px;">
+    <!-- Inhoud boven de footer -->
+</div>

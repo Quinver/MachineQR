@@ -52,3 +52,9 @@ body {
 .text-primary {
   color: #0095D0 !important;
 }
+.display-3 {
+  font-family: 'Arial Nova', Arial, sans-serif;
+  font-weight: bold;
+  color: #1c94d4;
+  text-align: center;
+}
