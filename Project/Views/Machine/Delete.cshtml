@@ -1,0 +1,37 @@
+@model Project.Models.MachineModel
+
+@{
+    ViewData["Title"] = "Delete Machine";
+}
+
+<h2>Delete Machine</h2>
+
+<h3>Are you sure you want to delete this machine?</h3>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Name</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Room)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Room)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </dl>
+        
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Delete" class="btn btn-danger" />
+                <a asp-action="List" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
