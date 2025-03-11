@@ -16,7 +16,7 @@ A web application that provides an overview of all machines at school, with QR c
 
 ## Setup
 (Might make a docker container in the future)
-(Have not tested what versions work, you'll need to debug it yourseld)
+(Have not tested what versions work, you'll need to debug it yourself)
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/machineqr.git
