@@ -11,8 +11,7 @@ A web application that provides an overview of all machines at school, with QR c
 ## Tech Stack
 - **Backend:** ASP.NET
 - **Database:** PostgreSQL
-- **Frontend:** HTML, CSS, JavaScript (adjust as needed)
-- **Hosting:** Azure
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap
 
 ## Setup
 (Might make a docker container in the future)
